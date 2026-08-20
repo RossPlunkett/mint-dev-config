@@ -1,2 +1,2 @@
 com.github.scrivanolabs.scrivano
-
+com.google.AndroidStudio

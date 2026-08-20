@@ -18,6 +18,10 @@ done
 if command -v nvim >/dev/null 2>&1; then
     nvim_version="$(nvim --version | sed -n '1s/^NVIM v//p')"
     printf 'info Neovim %s (requires 0.11+)\n' "$nvim_version"
+    if [[ "$(printf '%s\n' 0.11 "$nvim_version" | sort -V | head -n1)" != 0.11 ]]; then
+        printf 'OLD  Neovim %s is below 0.11\n' "$nvim_version"
+        failures=$((failures + 1))
+    fi
 fi
 
 if ((failures)); then

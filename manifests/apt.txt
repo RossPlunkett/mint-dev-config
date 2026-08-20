@@ -11,6 +11,8 @@ xclip
 gnome-terminal
 gnome-keyring
 libnotify-bin
+network-manager-gnome
+pulseaudio-utils
 
 # Core development tools
 build-essential
@@ -22,6 +24,7 @@ clang
 cmake
 curl
 fd-find
+fzf
 flex
 gdb
 git
@@ -79,4 +82,3 @@ default-jdk
 
 # Flatpak runtime for Scrivano
 flatpak
-

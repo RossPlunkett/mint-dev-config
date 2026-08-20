@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DRY_RUN=0
 WITH_PROJECTS=0
 SKIP_BUILD=0
+source "$ROOT/lib/install.sh"
 
 usage() {
     cat <<'EOF'
@@ -52,6 +53,28 @@ if ((WITH_PROJECTS)); then
     awk -F '\t' '!/^#/ && NF == 3 { printf "  - %s/%s (%s)\n", $1, $2, $3 }' "$ROOT/manifests/repositories.tsv"
 fi
 
+cat <<'EOF'
+
+Installation phases:
+  - Docker APT repository
+  - Tailscale APT repository
+  - Google Chrome APT repository
+  - Linux audio and JUCE build dependencies
+  - Homebrew CLI tools (Node deliberately excluded)
+  - NVM + Node 22
+  - Claude Code, Codex, Railway CLI, and CodeRabbit
+  - T3 Code desktop AppImage
+  - RossPlunkett/nvim with Neovim 0.11+
+  - Matt Pocock curated skills for Claude and Codex
+  - GNOME Terminal, i3, T3 keybindings, and portable shell config
+  - JetBrains Mono Nerd Font
+EOF
+
+if ((WITH_PROJECTS)); then
+    printf '%s\n' '  - npm ci for every locked Node project'
+    ((SKIP_BUILD)) || printf '%s\n' '  - csoundfreak/builddesktop.sh initial JUCE build'
+fi
+
 if ((DRY_RUN)); then
     printf '\nDry run complete; no changes made.\n'
     exit 0
@@ -62,5 +85,18 @@ if [[ ! -r /etc/linuxmint/info ]] || ! rg -q '^RELEASE=22\.3$' /etc/linuxmint/in
     exit 1
 fi
 
-printf '\nThe executable installation phases are added in the following verified slices.\n'
+printf '\nBeginning workstation installation.\n'
+install_apt_packages
+install_flatpaks
+install_homebrew
+install_node_tools
+install_editor_and_skills
+"$ROOT/install-config.sh"
 
+if ((WITH_PROJECTS)); then
+    clone_projects
+    ((SKIP_BUILD)) || build_projects
+fi
+
+"$ROOT/doctor.sh"
+printf '\nMachine-specific sign-in steps: %s/AUTH_CHECKLIST.md\n' "$ROOT"

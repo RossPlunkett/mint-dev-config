@@ -43,15 +43,26 @@ if [[ -x "$ROOT/bootstrap.sh" ]]; then
     [[ "$dry_run_output" == *'Linux Mint 22.3'* ]] && pass 'dry-run names supported Mint release' || fail 'dry-run names supported Mint release'
     [[ "$dry_run_output" == *'csoundfreak'* ]] && pass 'dry-run includes Ross projects' || fail 'dry-run includes Ross projects'
     [[ "$dry_run_output" == *'liquid-live-karaoke-clients'* ]] && pass 'dry-run includes karaoke projects' || fail 'dry-run includes karaoke projects'
+    for expected in 'Docker APT repository' 'Tailscale APT repository' 'NVM + Node 22' 'Matt Pocock curated skills' 'RossPlunkett/nvim' 'npm ci' 'builddesktop.sh' 'T3 Code' 'Claude Code' 'CodeRabbit'; do
+        [[ "$dry_run_output" == *"$expected"* ]] && pass "dry-run includes $expected" || fail "dry-run includes $expected"
+    done
 fi
 
 expect_contains manifests/apt.txt '^i3$' 'APT manifest includes i3'
 expect_contains manifests/apt.txt '^gnome-terminal$' 'APT manifest includes GNOME Terminal'
 expect_contains manifests/apt.txt '^tailscale$' 'APT manifest includes Tailscale'
+expect_contains manifests/apt.txt '^fzf$' 'APT manifest includes shell picker dependency'
 expect_contains manifests/brew.txt '^neovim$' 'Brew manifest includes current Neovim'
 expect_contains manifests/flatpak.txt '^com.github.scrivanolabs.scrivano$' 'Flatpak manifest includes Scrivano'
+expect_contains manifests/flatpak.txt '^com.google.AndroidStudio$' 'Flatpak manifest includes Android Studio'
+if rg -q '^node$' "$ROOT/manifests/brew.txt"; then
+    fail 'Homebrew manifest does not install Node'
+else
+    pass 'Homebrew manifest does not install Node'
+fi
 expect_contains desktop/gnome-terminal.dconf '^headerbar=@mb false$' 'GNOME Terminal hides the menubar'
 expect_contains dotfiles/i3/config 'bindsym \$mod\+Shift\+x exec --no-startup-id ~/.config/i3/i3KillAll.sh' 'i3 preserves force-kill binding'
+expect_contains doctor.sh 'sort -V' 'doctor enforces the Neovim minimum version'
 
 if [[ -x "$ROOT/install-config.sh" ]]; then
     fake_home="$(mktemp -d)"
