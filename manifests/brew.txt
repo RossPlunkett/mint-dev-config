@@ -1,0 +1,10 @@
+codex
+dysk
+gh
+gitui
+http-server
+lazygit
+neovim
+ripgrep
+zig
+
