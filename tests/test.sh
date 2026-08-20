@@ -23,6 +23,14 @@ expect_file manifests/apt.txt
 expect_file manifests/brew.txt
 expect_file manifests/flatpak.txt
 expect_file manifests/repositories.tsv
+expect_file install-config.sh
+expect_file dotfiles/bashrc
+expect_file dotfiles/i3/config
+expect_file dotfiles/i3/ROFWorkflow.sh
+expect_file dotfiles/i3/i3KillAll.sh
+expect_file dotfiles/local-bin/chrome-clean
+expect_file dotfiles/t3/keybindings.json
+expect_file desktop/gnome-terminal.dconf
 
 if [[ -x "$ROOT/bootstrap.sh" ]] && "$ROOT/bootstrap.sh" --help >/dev/null; then
     pass 'bootstrap help exits successfully'
@@ -42,6 +50,18 @@ expect_contains manifests/apt.txt '^gnome-terminal$' 'APT manifest includes GNOM
 expect_contains manifests/apt.txt '^tailscale$' 'APT manifest includes Tailscale'
 expect_contains manifests/brew.txt '^neovim$' 'Brew manifest includes current Neovim'
 expect_contains manifests/flatpak.txt '^com.github.scrivanolabs.scrivano$' 'Flatpak manifest includes Scrivano'
+expect_contains desktop/gnome-terminal.dconf '^headerbar=@mb false$' 'GNOME Terminal hides the menubar'
+expect_contains dotfiles/i3/config 'bindsym \$mod\+Shift\+x exec --no-startup-id ~/.config/i3/i3KillAll.sh' 'i3 preserves force-kill binding'
+
+if [[ -x "$ROOT/install-config.sh" ]]; then
+    fake_home="$(mktemp -d)"
+    printf 'old bashrc\n' >"$fake_home/.bashrc"
+    HOME="$fake_home" "$ROOT/install-config.sh" --no-dconf >/dev/null
+    [[ -L "$fake_home/.bashrc" ]] && pass 'config installer links bashrc' || fail 'config installer links bashrc'
+    [[ -L "$fake_home/.config/i3/config" ]] && pass 'config installer links i3 config' || fail 'config installer links i3 config'
+    [[ -L "$fake_home/.local/bin/chrome-clean" ]] && pass 'config installer links portable scripts' || fail 'config installer links portable scripts'
+    compgen -G "$fake_home/.config-backups/*/.bashrc" >/dev/null && pass 'config installer backs up replaced files' || fail 'config installer backs up replaced files'
+fi
 
 if rg -n --hidden --glob '!.git/**' --glob '!tests/test.sh' '/home/felix|monitor-layout|95-monitor-hotplug' "$ROOT"; then
     fail 'tracked configuration is hardware and username independent'

@@ -1,0 +1,19 @@
+[/]
+headerbar=@mb false
+
+[profiles:]
+default='22610424-cb12-4e4b-a8b0-0bba07da8e28'
+list=['22610424-cb12-4e4b-a8b0-0bba07da8e28']
+
+[profiles:/:22610424-cb12-4e4b-a8b0-0bba07da8e28]
+audible-bell=false
+background-color='rgb(0,0,0)'
+background-transparency-percent=7
+font='Ubuntu Mono 12'
+foreground-color='rgb(255,255,255)'
+scrollbar-policy='never'
+use-system-font=false
+use-theme-colors=false
+use-theme-transparency=false
+use-transparent-background=true
+visible-name='Ross Dev'

@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+profile="$HOME/.config/google-chrome/Default"
+rm -rf "$profile/Sessions" "$profile/Preferences.bak"
+if [ -f "$profile/Preferences" ]; then
+    sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' "$profile/Preferences"
+fi
+exec google-chrome-stable "$@"
+

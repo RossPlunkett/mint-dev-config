@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="${KARAOKE_WORKSPACE:-$HOME/dev/liquid-live-karaoke}"
+CLIENTS="$ROOT/liquid-live-karaoke-clients"
+SERVER="$ROOT/liquid-live-karaoke-server"
+
+for directory in "$CLIENTS" "$SERVER"; do
+    [[ -d "$directory" ]] || { printf 'Missing checkout: %s\n' "$directory" >&2; exit 1; }
+done
+
+term() {
+    gnome-terminal --working-directory="$1" -- bash -ic "$2; exec bash" &
+    sleep 1
+}
+
+i3-msg 'workspace 6' >/dev/null
+for app in system-admin org-admin-dashboard band-dashboard; do
+    term "$CLIENTS/$app" 'npm run dev'
+done
+i3-msg 'workspace 1' >/dev/null
+term "$CLIENTS" 'claude'
+i3-msg 'workspace 5' >/dev/null
+term "$CLIENTS" 'lazygit'
+term "$SERVER" 'lazygit'
+
+workspace=2
+for port in 5180 5181 5182; do
+    i3-msg "workspace $workspace" >/dev/null
+    google-chrome-stable --new-window "http://localhost:$port" &
+    workspace=$((workspace + 1))
+    sleep 4
+done
+i3-msg 'workspace 7' >/dev/null
+google-chrome-stable --new-window https://railway.com &
+i3-msg 'workspace 1' >/dev/null
+
