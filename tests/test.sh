@@ -19,6 +19,8 @@ expect_contains() {
 
 expect_file bootstrap.sh
 expect_file doctor.sh
+expect_file README.md
+expect_file AUTH_CHECKLIST.md
 expect_file manifests/apt.txt
 expect_file manifests/brew.txt
 expect_file manifests/flatpak.txt
@@ -31,6 +33,7 @@ expect_file dotfiles/i3/i3KillAll.sh
 expect_file dotfiles/local-bin/chrome-clean
 expect_file dotfiles/t3/keybindings.json
 expect_file desktop/gnome-terminal.dconf
+expect_file scripts/secret-scan.sh
 
 if [[ -x "$ROOT/bootstrap.sh" ]] && "$ROOT/bootstrap.sh" --help >/dev/null; then
     pass 'bootstrap help exits successfully'
@@ -63,6 +66,8 @@ fi
 expect_contains desktop/gnome-terminal.dconf '^headerbar=@mb false$' 'GNOME Terminal hides the menubar'
 expect_contains dotfiles/i3/config 'bindsym \$mod\+Shift\+x exec --no-startup-id ~/.config/i3/i3KillAll.sh' 'i3 preserves force-kill binding'
 expect_contains doctor.sh 'sort -V' 'doctor enforces the Neovim minimum version'
+expect_contains README.md 'monitor layouts' 'README documents hardware-specific exclusions'
+expect_contains AUTH_CHECKLIST.md 'gh auth login' 'auth checklist covers GitHub login'
 
 if [[ -x "$ROOT/install-config.sh" ]]; then
     fake_home="$(mktemp -d)"
@@ -84,6 +89,12 @@ if rg -n --hidden --glob '!.git/**' --glob '!tests/test.sh' '(BEGIN (RSA|OPENSSH
     fail 'repository contains no obvious secrets'
 else
     pass 'repository contains no obvious secrets'
+fi
+
+if "$ROOT/scripts/secret-scan.sh" >/dev/null; then
+    pass 'standalone secret scan passes'
+else
+    fail 'standalone secret scan passes'
 fi
 
 (( failures == 0 )) || exit 1
