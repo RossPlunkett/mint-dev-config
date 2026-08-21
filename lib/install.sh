@@ -17,7 +17,7 @@ setup_apt_repositories() {
         sudo tee /etc/apt/sources.list.d/google-chrome.list >/dev/null
 
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg |
-        sudo tee /etc/apt/keyrings/tailscale.gpg >/dev/null
+        sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list |
         sudo tee /etc/apt/sources.list.d/tailscale.list >/dev/null
 }
@@ -58,8 +58,12 @@ install_node_tools() {
     nvm install 22
     nvm alias default 22
     nvm use 22
-    npm install --global @anthropic-ai/claude-code @railway/cli
-    curl -fsSL https://cli.coderabbit.ai/install.sh | sh
+    npm install --global @anthropic-ai/claude-code @railway/cli http-server
+    curl -fsSL https://cli.coderabbit.ai/install.sh | CI=1 sh
+}
+
+github_access_ready() {
+    command -v gh >/dev/null 2>&1 && gh auth status --hostname github.com >/dev/null 2>&1
 }
 
 install_editor_and_skills() {

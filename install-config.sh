@@ -31,6 +31,7 @@ link_file "$ROOT/dotfiles/profile" "$HOME/.profile"
 link_file "$ROOT/dotfiles/i3/config" "$HOME/.config/i3/config"
 link_file "$ROOT/dotfiles/i3/ROFWorkflow.sh" "$HOME/.config/i3/ROFWorkflow.sh"
 link_file "$ROOT/dotfiles/i3/i3KillAll.sh" "$HOME/.config/i3/i3KillAll.sh"
+link_file "$ROOT/dotfiles/i3/monitor-layout.sh" "$HOME/.config/i3/monitor-layout.sh"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean" "$HOME/.local/bin/chrome-clean"
 link_file "$ROOT/dotfiles/local-bin/karaoke-workflow" "$HOME/.local/bin/karaoke-workflow"
 link_file "$ROOT/dotfiles/t3/keybindings.json" "$HOME/.t3/userdata/keybindings.json"
@@ -43,4 +44,3 @@ if ((APPLY_DCONF)); then
         printf 'skip    dconf is not installed\n'
     fi
 fi
-

@@ -4,6 +4,7 @@ font pango:monospace 8
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
+exec_always --no-startup-id ~/.config/i3/monitor-layout.sh
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
@@ -96,13 +97,16 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-bar { status_command i3status }
+bar {
+    status_command i3status
+    position bottom
+    tray_output primary
+}
 
-bindsym $mod+Shift+a workspace 5; exec --no-startup-id sh -lc '$HOME/android-studio/bin/studio.sh'
+bindsym $mod+Shift+a workspace 5; exec --no-startup-id flatpak run com.google.AndroidStudio
 assign [class="jetbrains-studio"] 5
 bindsym $mod+Mod1+Left workspace prev
 bindsym $mod+Mod1+Right workspace next
 bindsym Ctrl+Mod1+s exec --no-startup-id sh -c 'maim | xclip -selection clipboard -t image/png'
 bindsym Ctrl+Mod1+Shift+s exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png'
 bindsym --release $mod+g exec --no-startup-id karaoke-workflow
-

@@ -94,8 +94,16 @@ install_editor_and_skills
 "$ROOT/install-config.sh"
 
 if ((WITH_PROJECTS)); then
-    clone_projects
-    ((SKIP_BUILD)) || build_projects
+    if github_access_ready; then
+        clone_projects
+        ((SKIP_BUILD)) || build_projects
+    else
+        cat <<'EOF'
+
+Skipping private project checkouts because GitHub CLI is not authenticated.
+After the required reboot, run `gh auth login`, then rerun this command.
+EOF
+    fi
 fi
 
 "$ROOT/doctor.sh"
