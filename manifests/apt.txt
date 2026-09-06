@@ -8,6 +8,7 @@ i3lock
 wmctrl
 maim
 xclip
+copyq
 gnome-terminal
 gnome-keyring
 libnotify-bin

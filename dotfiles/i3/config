@@ -108,6 +108,6 @@ bindsym $mod+Shift+a workspace 5; exec --no-startup-id flatpak run com.google.An
 assign [class="jetbrains-studio"] 5
 bindsym $mod+Mod1+Left workspace prev
 bindsym $mod+Mod1+Right workspace next
-bindsym Ctrl+Mod1+s exec --no-startup-id sh -c 'maim | xclip -selection clipboard -t image/png'
-bindsym Ctrl+Mod1+Shift+s exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png'
+bindsym Ctrl+Mod1+s exec --no-startup-id ~/.config/i3/screenshot.sh full
+bindsym Ctrl+Mod1+Shift+s exec --no-startup-id ~/.config/i3/screenshot.sh region
 bindsym --release $mod+g exec --no-startup-id karaoke-workflow
