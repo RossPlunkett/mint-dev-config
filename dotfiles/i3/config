@@ -2,12 +2,12 @@ set $mod Mod4
 font pango:monospace 8
 
 # --- Matrix window title colors ---
-# Selected (focused): bright matrix green bar, white text.
+# Selected (focused): bright matrix green bar, near-black text.
 # Unselected: dark matrix green bar, white-ish (green-tinted) text.
 # focused_inactive is the focused window on an inactive monitor/workspace
 # (matters with multiple monitors) -- a mid green, between the two.
 #              class          border    background  text      indicator child_border
-client.focused                #00FF41   #00FF41     #FFFFFF   #00FF41   #00FF41
+client.focused                #00FF41   #00FF41     #030303   #00FF41   #00FF41
 client.focused_inactive       #0F3D0F   #0F3D0F     #BFE9BF   #0F3D0F   #0F3D0F
 client.unfocused              #0A2A0A   #0A2A0A     #C8F5C8   #0A2A0A   #0A2A0A
 client.urgent                 #FF3B3B   #3A0A0A     #FFD6D6   #FF3B3B   #FF3B3B
