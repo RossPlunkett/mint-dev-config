@@ -6,6 +6,7 @@ dex
 xss-lock
 i3lock
 wmctrl
+xdotool
 maim
 xclip
 copyq

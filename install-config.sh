@@ -35,6 +35,7 @@ link_file "$ROOT/dotfiles/i3/monitor-layout.sh" "$HOME/.config/i3/monitor-layout
 link_file "$ROOT/dotfiles/i3/screenshot.sh" "$HOME/.config/i3/screenshot.sh"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean" "$HOME/.local/bin/chrome-clean"
 link_file "$ROOT/dotfiles/local-bin/karaoke-workflow" "$HOME/.local/bin/karaoke-workflow"
+link_file "$ROOT/dotfiles/local-bin/o" "$HOME/.local/bin/o"
 link_file "$ROOT/dotfiles/t3/keybindings.json" "$HOME/.t3/userdata/keybindings.json"
 
 if ((APPLY_DCONF)); then

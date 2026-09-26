@@ -32,6 +32,7 @@ expect_file dotfiles/i3/ROFWorkflow.sh
 expect_file dotfiles/i3/i3KillAll.sh
 expect_file dotfiles/i3/monitor-layout.sh
 expect_file dotfiles/local-bin/chrome-clean
+expect_file dotfiles/local-bin/o
 expect_file dotfiles/t3/keybindings.json
 expect_file desktop/gnome-terminal.dconf
 expect_file scripts/secret-scan.sh
