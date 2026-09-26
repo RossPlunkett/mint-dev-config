@@ -26,7 +26,7 @@ If GitHub CLI is not authenticated, the first run installs the workstation and c
 ## What it installs
 
 - i3, GNOME Terminal, the existing i3 bindings and scripts, Bash configuration, and portable T3 Code keybindings
-- `o` in `~/.local/bin` (run from Super+D): opens GNOME Terminal and types `cdd` → `csoundfreak` → `omp` via `xdotool`
+- `o` in `~/.local/bin` (run from Super+D): opens GNOME Terminal and types `cd ~/dev/ross-o-fone/csoundfreak` → `omp` via `xdotool`
 - PipeWire/JACK/ALSA and JUCE build dependencies
 - GitHub CLI, Docker, Tailscale, Chrome, Android Studio, Scrivano, JetBrains Mono Nerd Font, and common development tools
 - Homebrew CLI tools, including current Neovim and Codex

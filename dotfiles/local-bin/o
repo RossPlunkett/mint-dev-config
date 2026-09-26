@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Open GNOME Terminal and type the csoundfreak + omp launch sequence keystroke by keystroke.
+# Open GNOME Terminal and type the cd-to-csoundfreak + omp launch sequence keystroke by keystroke.
 set -euo pipefail
 
 command -v xdotool >/dev/null 2>&1 || {
@@ -14,26 +14,24 @@ before="$(xdotool getactivewindow 2>/dev/null || echo none)"
 gnome-terminal &
 
 # Wait (up to 10s) for the new terminal window to take focus.
+terminal=
 for _ in $(seq 500); do
     active="$(xdotool getactivewindow 2>/dev/null || echo none)"
     if [[ "$active" != none && "$active" != "$before" ]] &&
-        xdotool getwindowclassname "$active" 2>/dev/null | grep -qi terminal; then
+        xprop -id "$active" WM_CLASS 2>/dev/null | grep -qi terminal; then
+        terminal="$active"
         break
     fi
     sleep 0.02
 done
-[[ "${active:-none}" != "$before" ]] || { printf 'o: terminal window never appeared\n' >&2; exit 1; }
+[[ -n "$terminal" ]] || { printf 'o: terminal window never appeared\n' >&2; exit 1; }
 sleep 0.3 # let bash print its prompt
 
 # No --window: gnome-terminal ignores XSendEvent input, so type into the focused window.
 type_text() { xdotool type --delay "$KEY_DELAY_MS" -- "$1"; }
 press_enter() { xdotool key Return; }
 
-type_text cdd
-press_enter
-sleep 0.2 # fd scan + fzf startup
-type_text csoundfreak
-sleep 0.1 # fzf filter settles
+type_text "cd $HOME/dev/ross-o-fone/csoundfreak"
 press_enter
 sleep 0.1
 type_text omp
