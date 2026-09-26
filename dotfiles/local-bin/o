@@ -31,7 +31,7 @@ press_enter() { xdotool key Return; }
 
 type_text cdd
 press_enter
-sleep 1.05 # fd scan + fzf startup
+sleep 0.2 # fd scan + fzf startup
 type_text csoundfreak
 sleep 0.1 # fzf filter settles
 press_enter
