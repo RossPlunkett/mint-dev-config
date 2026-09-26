@@ -8,22 +8,22 @@ command -v xdotool >/dev/null 2>&1 || {
     exit 1
 }
 
-KEY_DELAY_MS="${O_KEY_DELAY_MS:-40}"
+KEY_DELAY_MS="${O_KEY_DELAY_MS:-10}"
 
 before="$(xdotool getactivewindow 2>/dev/null || echo none)"
 gnome-terminal &
 
 # Wait (up to 10s) for the new terminal window to take focus.
-for _ in $(seq 100); do
+for _ in $(seq 500); do
     active="$(xdotool getactivewindow 2>/dev/null || echo none)"
     if [[ "$active" != none && "$active" != "$before" ]] &&
         xdotool getwindowclassname "$active" 2>/dev/null | grep -qi terminal; then
         break
     fi
-    sleep 0.1
+    sleep 0.02
 done
 [[ "${active:-none}" != "$before" ]] || { printf 'o: terminal window never appeared\n' >&2; exit 1; }
-sleep 0.5 # let bash print its prompt
+sleep 0.3 # let bash print its prompt
 
 # No --window: gnome-terminal ignores XSendEvent input, so type into the focused window.
 type_text() { xdotool type --delay "$KEY_DELAY_MS" -- "$1"; }
@@ -31,10 +31,10 @@ press_enter() { xdotool key Return; }
 
 type_text cdd
 press_enter
-sleep 1.5 # fd scan + fzf startup
+sleep 1.05 # fd scan + fzf startup
 type_text csoundfreak
-sleep 1 # fzf filter settles
+sleep 0.1 # fzf filter settles
 press_enter
-sleep 0.5
+sleep 0.1
 type_text omp
 press_enter
