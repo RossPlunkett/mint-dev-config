@@ -26,17 +26,30 @@ link_file() {
     printf 'linked  %s\n' "$target"
 }
 
+# Retire only links owned by this checkout; leave independently managed files alone.
+for retired in \
+    "dotfiles/i3/ROFWorkflow.sh|.config/i3/ROFWorkflow.sh" \
+    "dotfiles/local-bin/karaoke-workflow|.local/bin/karaoke-workflow" \
+    "dotfiles/t3/keybindings.json|.t3/userdata/keybindings.json"; do
+    source="$ROOT/${retired%%|*}"
+    target="$HOME/${retired#*|}"
+    if [[ -L "$target" && "$(readlink -m "$target")" == "$source" ]]; then
+        relative="${target#"$HOME"/}"
+        mkdir -p "$BACKUP_DIR/$(dirname "$relative")"
+        mv "$target" "$BACKUP_DIR/$relative"
+        printf 'retired %s\n' "$target"
+    fi
+done
+
 link_file "$ROOT/dotfiles/bashrc" "$HOME/.bashrc"
 link_file "$ROOT/dotfiles/profile" "$HOME/.profile"
 link_file "$ROOT/dotfiles/i3/config" "$HOME/.config/i3/config"
-link_file "$ROOT/dotfiles/i3/ROFWorkflow.sh" "$HOME/.config/i3/ROFWorkflow.sh"
 link_file "$ROOT/dotfiles/i3/i3KillAll.sh" "$HOME/.config/i3/i3KillAll.sh"
 link_file "$ROOT/dotfiles/i3/monitor-layout.sh" "$HOME/.config/i3/monitor-layout.sh"
 link_file "$ROOT/dotfiles/i3/screenshot.sh" "$HOME/.config/i3/screenshot.sh"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean" "$HOME/.local/bin/chrome-clean"
-link_file "$ROOT/dotfiles/local-bin/karaoke-workflow" "$HOME/.local/bin/karaoke-workflow"
 link_file "$ROOT/dotfiles/local-bin/o" "$HOME/.local/bin/o"
-link_file "$ROOT/dotfiles/t3/keybindings.json" "$HOME/.t3/userdata/keybindings.json"
+link_file "$ROOT/dotfiles/copyq/copyq-commands.ini" "$HOME/.config/copyq/copyq-commands.ini"
 
 if ((APPLY_DCONF)); then
     if command -v dconf >/dev/null 2>&1; then

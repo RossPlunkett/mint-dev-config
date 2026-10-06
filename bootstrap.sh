@@ -15,7 +15,7 @@ Configure a Linux Mint 22.3 + i3 development workstation.
 
 Options:
   --dry-run        Print intended actions without changing the machine
-  --with-projects  Clone Ross-o-Fone, Sauce, and karaoke repositories
+  --with-projects  Clone Ross-o-Fone and Sauce repositories
   --skip-build     Clone projects but skip npm/JUCE bootstrap builds
   -h, --help       Show this help
 EOF
@@ -61,13 +61,14 @@ Installation phases:
   - Google Chrome APT repository
   - Linux audio and JUCE build dependencies
   - Homebrew CLI tools (Node deliberately excluded)
-  - NVM + Node 22
-  - Claude Code, Codex, Railway CLI, and CodeRabbit
-  - T3 Code desktop AppImage
+  - NVM + Node 22, Bun, and Pi
+  - Claude Code, standalone Codex and OMP, Railway CLI, and CodeRabbit
+  - uv, trafilatura, and OpenCode
+  - Blender 5.2.2 LTS and draw.io
   - RossPlunkett/nvim with Neovim 0.11+
-  - Matt Pocock curated skills for Claude and Codex
-  - GNOME Terminal, i3, T3 keybindings, and portable shell config
-  - JetBrains Mono Nerd Font
+  - Matt Pocock curated skills for coding agents
+  - GNOME Terminal, i3, CopyQ commands, and portable shell config
+  - JetBrains Mono Nerd Font and Courier Prime
 EOF
 
 if ((WITH_PROJECTS)); then
@@ -80,7 +81,7 @@ if ((DRY_RUN)); then
     exit 0
 fi
 
-if [[ ! -r /etc/linuxmint/info ]] || ! rg -q '^RELEASE=22\.3$' /etc/linuxmint/info; then
+if [[ ! -r /etc/linuxmint/info ]] || ! grep -q '^RELEASE=22\.3$' /etc/linuxmint/info; then
     printf 'This bootstrap supports Linux Mint 22.3 only.\n' >&2
     exit 1
 fi
@@ -88,6 +89,7 @@ fi
 printf '\nBeginning workstation installation.\n'
 install_apt_packages
 install_flatpaks
+install_desktop_apps
 install_homebrew
 install_node_tools
 install_editor_and_skills
@@ -106,5 +108,7 @@ EOF
     fi
 fi
 
+# A fresh login may predate these directories; check the newly installed CLIs now.
+export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"
 "$ROOT/doctor.sh"
 printf '\nMachine-specific sign-in steps: %s/AUTH_CHECKLIST.md\n' "$ROOT"

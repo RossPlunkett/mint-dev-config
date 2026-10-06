@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-if rg -n --hidden \
+if rg --files-with-matches --hidden \
     --glob '!.git/**' \
     --glob '!scripts/secret-scan.sh' \
     --glob '!tests/test.sh' \

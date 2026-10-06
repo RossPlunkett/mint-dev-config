@@ -11,7 +11,7 @@ check_command() {
     fi
 }
 
-for command in git node npm cmake ninja g++ i3 gnome-terminal nvim lazygit docker tailscale gh codex claude; do
+for command in git node npm bun uv trafilatura cmake ninja g++ i3 gnome-terminal nvim lazygit docker tailscale gh codex claude omp pi railway coderabbit opencode blender drawio dot tmux btop htop ncdu ranger tig glab Xvfb yt-dlp obs kdenlive luarocks nload cava; do
     check_command "$command"
 done
 

@@ -58,8 +58,13 @@ install_node_tools() {
     nvm install 22
     nvm alias default 22
     nvm use 22
-    npm install --global @anthropic-ai/claude-code @railway/cli http-server
-    curl -fsSL https://cli.coderabbit.ai/install.sh | CI=1 sh
+    npm install --global @anthropic-ai/claude-code @railway/cli http-server @earendil-works/pi-coding-agent bun
+    "$ROOT/scripts/install-agent-tools.sh"
+}
+
+install_desktop_apps() {
+    "$ROOT/scripts/install-blender.sh"
+    "$ROOT/scripts/install-drawio.sh"
 }
 
 github_access_ready() {
@@ -79,9 +84,9 @@ install_editor_and_skills() {
         git -C "$HOME/.config/nvim" pull --ff-only
     fi
 
-    "$ROOT/scripts/install-matt-skills.sh"
-    "$ROOT/scripts/install-t3code.sh"
+    "$ROOT/scripts/install-skills.sh"
     "$ROOT/scripts/install-fonts.sh"
+    "$ROOT/scripts/install-courier-prime.sh"
 }
 
 clone_projects() {
@@ -90,7 +95,6 @@ clone_projects() {
         [[ "$group" == \#* || -z "$group" ]] && continue
         case "$group" in
             ross) root="$HOME/dev/ross-o-fone" ;;
-            karaoke) root="$HOME/dev/liquid-live-karaoke" ;;
             *) printf 'Unknown repository group: %s\n' "$group" >&2; return 1 ;;
         esac
         destination="$root/$directory"
@@ -107,15 +111,12 @@ clone_projects() {
 }
 
 build_projects() {
-    local workspace lock directory
-    for workspace in "$HOME/dev/ross-o-fone" "$HOME/dev/liquid-live-karaoke"; do
-        [[ -d "$workspace" ]] || continue
-        while IFS= read -r lock; do
-            directory="$(dirname "$lock")"
-            printf 'npm ci  %s\n' "$directory"
-            (cd "$directory" && npm ci)
-        done < <(find "$workspace" -maxdepth 4 -name package-lock.json -not -path '*/node_modules/*' -print | sort)
-    done
+    local workspace="$HOME/dev/ross-o-fone" lock directory
+    while IFS= read -r lock; do
+        directory="$(dirname "$lock")"
+        printf 'npm ci  %s\n' "$directory"
+        (cd "$directory" && npm ci)
+    done < <(find "$workspace" -maxdepth 4 -name package-lock.json -not -path '*/node_modules/*' -print | sort)
 
-    "$HOME/dev/ross-o-fone/csoundfreak/builddesktop.sh"
+    "$workspace/csoundfreak/builddesktop.sh"
 }

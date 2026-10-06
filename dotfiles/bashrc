@@ -31,9 +31,7 @@ export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 
-export PATH="$HOME/.local/bin:$PATH"
 export ROF_WORKSPACE="${ROF_WORKSPACE:-$HOME/dev/ross-o-fone}"
-export KARAOKE_WORKSPACE="${KARAOKE_WORKSPACE:-$HOME/dev/liquid-live-karaoke}"
 
 alias csf='cd "$ROF_WORKSPACE/csoundfreak"'
 alias rofs='cd "$ROF_WORKSPACE/ross-o-fone-server"'
@@ -65,7 +63,29 @@ if [[ -d "$HOME/android-studio" ]]; then
 fi
 export ANDROID_HOME="${ANDROID_HOME:-$HOME/Android/Sdk}"
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
-export PATH="${JAVA_HOME:+$JAVA_HOME/bin:}$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+
+_mdc_path_prepend() {
+    [[ -d "$1" ]] || return 0
+    local path=":$PATH:"
+    path="${path//":$1:"/:}"
+    path="${path#:}"
+    path="${path%:}"
+    PATH="$1${path:+:$path}"
+}
+[[ -n "${JAVA_HOME:-}" ]] && _mdc_path_prepend "$JAVA_HOME/bin"
+_mdc_path_prepend "$ANDROID_HOME/emulator"
+_mdc_path_prepend "$ANDROID_HOME/platform-tools"
 
 [[ -r "$HOME/.railway/env" ]] && source "$HOME/.railway/env"
 
+# User-level runtimes; later entries win. ~/.local/bin stays first so standalone
+# CLIs (omp, codex, uv) beat Homebrew/NVM copies.
+_mdc_path_prepend "$HOME/.luarocks/bin"
+_mdc_path_prepend "$HOME/.opencode/bin"
+_mdc_path_prepend "$HOME/.bun/bin"
+_mdc_path_prepend "$HOME/bin"
+_mdc_path_prepend "$HOME/.local/bin"
+export PATH
+unset -f _mdc_path_prepend
+
+[[ -r "$HOME/.config/mint-dev-config/private.env" ]] && source "$HOME/.config/mint-dev-config/private.env"

@@ -16,8 +16,10 @@ gnome-keyring
 libnotify-bin
 network-manager-gnome
 pulseaudio-utils
+dconf-cli
 
 # Core development tools
+bash-completion
 build-essential
 autoconf
 automake
@@ -30,6 +32,8 @@ fd-find
 fzf
 flex
 gdb
+glab
+graphviz
 git
 gnupg
 lldb
@@ -41,9 +45,26 @@ python3-venv
 ripgrep
 rsync
 shellcheck
+tig
+tmux
 unzip
 wget
+xvfb
+xz-utils
 zip
+
+# Terminal utilities
+btop
+htop
+ncdu
+nload
+ranger
+yt-dlp
+
+# Media and recording
+cava
+kdenlive
+obs-studio
 
 # JUCE and Linux audio
 alsa-utils

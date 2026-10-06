@@ -1,8 +1,6 @@
-codex
 dysk
 gh
 gitui
 lazygit
+luarocks
 neovim
-ripgrep
-zig

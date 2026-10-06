@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
-# Open GNOME Terminal and type the cd-to-csoundfreak + omp launch sequence keystroke by keystroke.
+# Open GNOME Terminal and visibly type `cd <ROF_WORKSPACE>/csoundfreak && omp`.
 set -euo pipefail
 
-command -v xdotool >/dev/null 2>&1 || {
-    notify-send 'o' 'xdotool is not installed (sudo apt install xdotool)' 2>/dev/null || true
-    printf 'o: xdotool is not installed\n' >&2
+fail() {
+    notify-send 'o' "$1" 2>/dev/null || true
+    printf 'o: %s\n' "$1" >&2
     exit 1
 }
 
+command -v xdotool >/dev/null 2>&1 || fail 'xdotool is not installed (sudo apt install xdotool)'
+
 KEY_DELAY_MS="${O_KEY_DELAY_MS:-40}"
+target="${ROF_WORKSPACE:-$HOME/dev/ross-o-fone}/csoundfreak"
+[[ -d "$target" ]] || fail "missing checkout: $target"
 
 before="$(xdotool getactivewindow 2>/dev/null || echo none)"
 gnome-terminal &
@@ -24,15 +28,10 @@ for _ in $(seq 500); do
     fi
     sleep 0.02
 done
-[[ -n "$terminal" ]] || { printf 'o: terminal window never appeared\n' >&2; exit 1; }
+[[ -n "$terminal" ]] || fail 'terminal window never appeared'
 sleep 0.3 # let bash print its prompt
 
 # No --window: gnome-terminal ignores XSendEvent input, so type into the focused window.
-type_text() { xdotool type --delay "$KEY_DELAY_MS" -- "$1"; }
-press_enter() { xdotool key Return; }
-
-type_text "cd $HOME/dev/ross-o-fone/csoundfreak"
-press_enter
-sleep 0.1
-type_text omp
-press_enter
+# `&&` keeps omp from starting anywhere but the checkout if cd fails.
+xdotool type --delay "$KEY_DELAY_MS" -- "cd -- $(printf '%q' "$target") && omp"
+xdotool key Return

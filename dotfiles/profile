@@ -1,6 +1,23 @@
 # Managed by mint-dev-config.
-[[ -n "${BASH_VERSION:-}" && -r "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
-[[ -d "$HOME/bin" ]] && PATH="$HOME/bin:$PATH"
-[[ -d "$HOME/.local/bin" ]] && PATH="$HOME/.local/bin:$PATH"
-export PATH
+# POSIX sh: read by display managers (i3/Cinnamon sessions) and login shells.
 
+mdc_path_prepend() {
+    [ -d "$1" ] || return 0
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) PATH="$1${PATH:+:$PATH}" ;;
+    esac
+}
+
+# Later entries win; ~/.local/bin ends up first.
+mdc_path_prepend "$HOME/.luarocks/bin"
+mdc_path_prepend "$HOME/.opencode/bin"
+mdc_path_prepend "$HOME/.bun/bin"
+mdc_path_prepend "$HOME/bin"
+mdc_path_prepend "$HOME/.local/bin"
+export PATH
+unset -f mdc_path_prepend
+
+if [ -n "${BASH_VERSION:-}" ] && [ -r "$HOME/.bashrc" ]; then
+    . "$HOME/.bashrc"
+fi
