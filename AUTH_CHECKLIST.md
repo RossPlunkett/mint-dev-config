@@ -15,6 +15,8 @@ The bootstrap records software and portable preferences, not application login s
 - [ ] Set Git identity: `git config --global user.name "Ross Plunkett"` and `git config --global user.email "YOUR_EMAIL"`.
 - [ ] Authenticate Railway with `railway login`.
 - [ ] Run Claude Code, Codex, OMP, and Pi and complete their appropriate provider/account setup. Do not copy agent auth/session databases from another workstation.
+- [ ] For the [Pi profile](pi/README.md), authenticate Claude Code's subscription separately from Pi's OpenAI `/login`; verify the bridge plan matches the account. Launch subscription-backed Pi without exported Anthropic API/gateway variables. Select an available model if the recorded startup ID is unavailable.
+- [ ] Verify Pi's title/widget/theme/flair and explicitly requested foreground/async Claude children in `/subagents-fleet`. Review automatic project trust and subagent authority choices before using untrusted checkouts.
 - [ ] Complete OpenCode and CodeRabbit authentication for their intended use.
 - [ ] Open Android Studio, install required SDK/platform tools, accept licenses, and restore signing keys only from an approved private backup.
 - [ ] If private project checkouts were deferred, rerun `./bootstrap.sh --with-projects` after GitHub login.

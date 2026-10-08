@@ -1,0 +1,19 @@
+{
+  "inlineToolDisplay": "rich",
+  "fleetView": true,
+  "fleetViewPlacement": "aboveEditor",
+  "asyncWidget": false,
+  "asyncByDefault": false,
+  "defaultSubagentContext": "fresh",
+  "toolActivation": "eager",
+  "authorityPolicy": {
+    "discardWorktree": "auto",
+    "destructiveCleanup": "auto",
+    "spawnBudgetGrant": "auto",
+    "scheduleCreate": "auto",
+    "stopRun": "auto",
+    "steerRun": "auto",
+    "inspectorOpen": "auto",
+    "projectOpen": "auto"
+  }
+}

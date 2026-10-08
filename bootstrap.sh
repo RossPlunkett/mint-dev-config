@@ -61,7 +61,7 @@ Installation phases:
   - Google Chrome APT repository
   - Linux audio and JUCE build dependencies
   - Homebrew CLI tools (Node deliberately excluded)
-  - NVM + Node 22, Bun, and Pi
+  - NVM + Node 22, Bun, and Pi with the recorded UI/subagents/Claude bridge profile
   - Claude Code, standalone Codex and OMP, Railway CLI, and CodeRabbit
   - uv, trafilatura, and OpenCode
   - Blender 5.2.2 LTS and draw.io

@@ -1,0 +1,10 @@
+{
+  "name": "mint-dev-pi-defaults",
+  "private": true,
+  "type": "module",
+  "pi": {
+    "extensions": ["./extensions/flair.mjs", "./extensions/system-prompts.mjs", "./extensions/chat-title.mjs"],
+    "themes": ["./themes/felix-night.json"],
+    "prompts": ["./prompts/browser-test.md"]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "defaultThinkingLevel": "medium",
+  "theme": "felix-night",
+  "tuiMode": "fullscreen",
+  "quietStartup": "header",
+  "terminal": {
+    "showImages": true,
+    "showTerminalProgress": true
+  },
+  "subagents": {
+    "defaultThinking": "medium"
+  },
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-6.1-sol",
+  "piOmpTheme": {
+    "preset": "omp",
+    "theme": {
+      "autoApply": "felix-night"
+    }
+  },
+  "defaultProjectTrust": "always"
+}

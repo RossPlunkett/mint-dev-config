@@ -58,7 +58,8 @@ install_node_tools() {
     nvm install 22
     nvm alias default 22
     nvm use 22
-    npm install --global @anthropic-ai/claude-code @railway/cli http-server @earendil-works/pi-coding-agent bun
+    npm install --global @anthropic-ai/claude-code @railway/cli http-server bun
+    "$ROOT/scripts/install-pi.sh"
     "$ROOT/scripts/install-agent-tools.sh"
 }
 

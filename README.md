@@ -45,6 +45,12 @@ Selected copies live directly in **`~/.agents/skills`**, the one shared skill di
 
 To refresh only skills, run `./scripts/install-skills.sh`. To refresh bundled fallbacks, review the upstream changes and update their copies and provenance together; bootstrap never rewrites the repository's fallback snapshots.
 
+## Pi: portable personalized setup
+
+Bootstrap applies the complete recorded Pi profile through `scripts/install-pi.sh`. For Pi-only installation, restoration, authentication, customization inventory and verification, read **[pi/README.md](pi/README.md)**. The self-contained `pi/` package includes the Felix Night theme, OMP-style editor, working animation, visible session title and auto-namer, shared agent instructions, browser-test prompt, pinned subagents and Claude bridge configuration. Root `AGENTS.md` directs agents to this guide; runtime instructions reach Pi parents and children in any working directory. Credentials and sessions stay per machine.
+
+This records the trusted workstation's automatic project trust and subagent authority settings; review the guide's safety notes before applying it to unfamiliar repositories. Keep the checkout in place because Pi loads its local package from here.
+
 ## Shell and desktop preferences
 
 GNOME Terminal uses a black background, **blue text `rgb(52,71,176)`**, Ubuntu Mono 12, 7% transparency, no scrollbar/bell, and a hidden menubar. CopyQ's pin/tag command preferences are recorded; clipboard history is not.
@@ -93,6 +99,8 @@ Pull and rerun bootstrap to apply selected tools and configuration. Existing pro
 
 ```bash
 ./tests/test.sh
+./tests/test-pi.sh
+node tests/test-pi-extensions.mjs  # requires installed Pi peers; no model calls
 bash -n bootstrap.sh doctor.sh install-config.sh lib/install.sh scripts/*.sh tests/test.sh
 ./scripts/secret-scan.sh
 ```
