@@ -69,7 +69,7 @@ Installation phases:
   - RossPlunkett/nvim with Neovim 0.11+
   - Matt Pocock curated skills for coding agents
   - GNOME Terminal, i3, CopyQ commands, and portable shell config
-  - bspwm rice session: picom v13 built from source, 22 switchable rices and their Omarchy wallpapers
+  - bspwm rice session: picom v13 built from source, 14 switchable rices and their Omarchy wallpapers
   - JetBrains Mono, Monofur, 3270 and HeavyData Nerd Fonts, and Courier Prime
 EOF
 

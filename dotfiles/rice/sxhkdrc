@@ -49,7 +49,7 @@ super + e
 super + {s,w}
 	bspc desktop -l next
 super + alt + {Left,Right}
-	bspc desktop -f {prev,next}.occupied
+	bspc desktop -f {prev,next}.local
 super + {1-9,0}
 	bspc desktop -f {1-9,10}
 super + shift + {1-9,0}
