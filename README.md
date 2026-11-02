@@ -78,6 +78,7 @@ A third login session, **bspwm**, sits beside Cinnamon and i3 without touching e
 - **Neovim:** `RICE_NVIM` is set only in this session, so the colorscheme follows the rice there and nowhere else. RossPlunkett/nvim's `init.lua` loads the hook.
 - **Wallpaper images** are Omarchy's artwork and stay out of Git: `manifests/wallpapers.tsv` pins each to an Omarchy commit and `scripts/install-rice.sh` downloads and scales them.
 - **picom v13** is built from source into `~/.local/bin` by `scripts/install-picom.sh`; Mint's v10 has no animations.
+- **kitty** comes from kitty's own installer into `~/.local/kitty.app` (`scripts/install-kitty.sh`); Mint's 0.32 sends Backspace twice in Pi.
 - Rendered files (`~/.config/rice/current/`) and display layouts stay local. Put xrandr lines for a particular desk in `~/.config/bspwm/local.sh`, which `bspwmrc` sources when present.
 - To add a rice, create `dotfiles/rice/themes/NAME/theme.env` with the same keys as the others and list its wallpapers in the manifest.
 

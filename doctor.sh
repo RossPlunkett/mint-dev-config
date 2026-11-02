@@ -32,6 +32,13 @@ else
     failures=$((failures + 1))
 fi
 
+if [[ -x "$HOME/.local/kitty.app/bin/kitty" ]]; then
+    printf 'ok   %s (~/.local/kitty.app)\n' "$("$HOME/.local/kitty.app/bin/kitty" --version | cut -d' ' -f1-2)"
+else
+    printf 'MISS kitty in ~/.local/kitty.app (scripts/install-kitty.sh)\n'
+    failures=$((failures + 1))
+fi
+
 if ((failures)); then
     printf '\nDoctor found %d missing command(s).\n' "$failures" >&2
     exit 1
