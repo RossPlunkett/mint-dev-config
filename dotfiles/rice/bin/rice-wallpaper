@@ -1,0 +1,39 @@
+#!/bin/bash
+# rice-wallpaper next|prev   step through the current rice's wallpapers
+# rice-wallpaper pick        choose from a menu with previews
+# rice-wallpaper list        print them, marking the current one
+# rice-wallpaper FILE        set one by file name
+# Each rice remembers its own choice in current/wallpaper-NAME.
+set -euo pipefail
+R="$HOME/.config/rice"
+rice=$(cat "$R/current/name" 2>/dev/null || echo osaka-jade)
+walls() { ls "$R/themes/$1/wallpapers"; }
+chosen() {
+  local saved
+  saved=$(cat "$R/current/wallpaper-$1" 2>/dev/null || true)
+  if [ -n "$saved" ] && [ -f "$R/themes/$1/wallpapers/$saved" ]; then echo "$saved"; return; fi
+  # shellcheck source=/dev/null
+  (. "$R/themes/$1/theme.env"; echo "$RICE_WALLPAPER")
+}
+apply() { feh --no-fehbg --bg-fill "$R/themes/$rice/wallpapers/$(chosen "$rice")"; }
+step() { # awk prints the neighbor of the current line, wrapping at both ends
+  walls "$rice" | awk -v c="$(chosen "$rice")" -v d="$1" '{a[NR]=$0; if($0==c)i=NR} END{print a[(i-1+d+NR)%NR+1]}'
+}
+choose() {
+  [ -f "$R/themes/$rice/wallpapers/$1" ] || { echo "no wallpaper $1 in $rice (have: $(walls "$rice" | xargs))" >&2; exit 1; }
+  echo "$1" > "$R/current/wallpaper-$rice"
+  apply
+}
+case "${1:-next}" in
+  --thumb) echo "$R/themes/$2/thumbs/$(chosen "$2")" ;;
+  --apply) apply ;;
+  list) c=$(chosen "$rice"); for w in $(walls "$rice"); do [ "$w" = "$c" ] && echo "* $w" || echo "  $w"; done ;;
+  next) choose "$(step 1)" ;;
+  prev) choose "$(step -1)" ;;
+  pick)
+    w=$(for f in $(walls "$rice"); do printf '%s\0icon\x1f%s\n' "$f" "$R/themes/$rice/thumbs/$f"; done \
+      | rofi -dmenu -i -show-icons -p "wallpaper" -config "$R/current/rofi.rasi" \
+        -theme-str 'window {width: 640px;} listview {lines: 4;} element-icon {size: 112px;} element-text {vertical-align: 0.5;}') || exit 0
+    choose "$w" ;;
+  *) choose "$1" ;;
+esac

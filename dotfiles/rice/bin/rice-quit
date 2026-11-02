@@ -1,0 +1,3 @@
+#!/bin/bash
+answer=$(printf 'No\nYes\n' | rofi -dmenu -i -p "Log out?" -config "$HOME/.config/rice/current/rofi.rasi") || exit 0
+[ "$answer" = Yes ] && bspc quit

@@ -1,0 +1,30 @@
+[global]
+monitor = 0
+follow = mouse
+width = 340
+offset = 14x40
+origin = top-right
+transparency = 12
+frame_width = 2
+corner_radius = ${RICE_RADIUS}
+padding = 10
+horizontal_padding = 12
+font = JetBrainsMono Nerd Font 10
+frame_color = "${RICE_ACCENT}"
+separator_color = frame
+
+[urgency_low]
+background = "${RICE_BG}"
+foreground = "${RICE_FG_MUTED}"
+timeout = 5
+
+[urgency_normal]
+background = "${RICE_BG}"
+foreground = "${RICE_FG}"
+timeout = 8
+
+[urgency_critical]
+background = "${RICE_BG}"
+foreground = "${RICE_FG}"
+frame_color = "${RICE_RED}"
+timeout = 0

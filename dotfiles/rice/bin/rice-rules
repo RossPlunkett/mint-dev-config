@@ -1,0 +1,5 @@
+#!/bin/bash
+# bspc rule only matches exact classes, and agent browsers use --class=rof-agent-<id>.
+case "$2" in
+  rof-agent*) echo "desktop=rof-agent follow=off focus=off" ;;
+esac

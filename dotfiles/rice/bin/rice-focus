@@ -1,0 +1,13 @@
+#!/bin/bash
+# Directional focus, except monocle stacks windows in one spot, so there it cycles instead.
+# Super+A can leave focus on a container, and direction keys should get back to a window from there.
+if ! bspc query -N -n focused.window >/dev/null 2>&1; then
+  bspc node -f last.local.window
+  exit
+fi
+case "$1" in west|north) step=prev ;; *) step=next ;; esac
+if bspc query -T -d focused | grep -q '"layout":"monocle"'; then
+  bspc node -f "$step.local.!hidden.window"
+else
+  bspc node -f "$1"
+fi

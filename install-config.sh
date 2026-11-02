@@ -55,6 +55,17 @@ link_file "$ROOT/dotfiles/local-bin/playwright-cli" "$HOME/.local/bin/playwright
 link_file "$ROOT/dotfiles/mcp/mcp.json" "$HOME/.config/mcp/mcp.json"
 link_file "$ROOT/dotfiles/copyq/copyq-commands.ini" "$HOME/.config/copyq/copyq-commands.ini"
 
+# bspwm rice: a third login session beside Cinnamon and i3. Only the tracked files
+# are links; wallpapers (scripts/install-rice.sh) and rendered state stay local.
+link_file "$ROOT/dotfiles/bspwm/bspwmrc" "$HOME/.config/bspwm/bspwmrc"
+for path in sxhkdrc nvim.lua bin templates; do
+    link_file "$ROOT/dotfiles/rice/$path" "$HOME/.config/rice/$path"
+done
+for env in "$ROOT"/dotfiles/rice/themes/*/theme.env; do
+    theme="$(basename "$(dirname "$env")")"
+    link_file "$env" "$HOME/.config/rice/themes/$theme/theme.env"
+done
+
 # OMP rewrites its own config, so it gets a copy, and only when it has none.
 if [[ ! -e "$HOME/.omp/agent/config.yml" ]]; then
     install -D -m 0600 "$ROOT/dotfiles/omp/config.yml" "$HOME/.omp/agent/config.yml"

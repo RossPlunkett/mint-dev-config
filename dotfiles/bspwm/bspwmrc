@@ -1,0 +1,50 @@
+#!/bin/bash
+# Everything rice-related hangs off this session's environment, so i3 and Cinnamon never see it.
+R="$HOME/.config/rice"
+export PATH="$HOME/.local/bin:$R/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
+export KITTY_CONFIG_DIRECTORY="$R/current/kitty"
+export RICE_NVIM="$R/nvim.lua"
+export GTK_THEME=Mint-Y-Dark-Aqua
+
+# Machine-specific display setup (xrandr layouts and the like) lives outside Git.
+[ -f "$HOME/.config/bspwm/local.sh" ] && . "$HOME/.config/bspwm/local.sh"
+
+# Desktops 1-5 on the primary monitor, 6-10 on the next one if there is one.
+primary=$(xrandr --query | awk '/ connected primary/{print $1; exit}')
+mapfile -t monitors < <(bspc query -M --names)
+[ -n "$primary" ] || primary=${monitors[0]}
+second=""
+for m in "${monitors[@]}"; do [ "$m" != "$primary" ] && { second=$m; break; }; done
+if [ -n "$second" ]; then
+  bspc monitor "$primary" -d 1 2 3 4 5 rof-agent
+  bspc monitor "$second" -d 6 7 8 9 10
+else
+  bspc monitor "$primary" -d 1 2 3 4 5 6 7 8 9 10 rof-agent
+fi
+
+bspc config top_padding 26
+bspc config split_ratio 0.5
+bspc config borderless_monocle true
+bspc config gapless_monocle true
+bspc config focus_follows_pointer true
+# Like i3: an app elsewhere can't drag you to its desktop, which agent browsers otherwise do.
+bspc config ignore_ewmh_focus true
+bspc config pointer_modifier mod4
+bspc config pointer_action1 move
+bspc config pointer_action3 resize_corner
+bspc rule -r '*'
+bspc config external_rules_command "$R/bin/rice-rules"
+bspc rule -a jetbrains-studio desktop=5
+bspc rule -a Pavucontrol state=floating
+bspc rule -a copyq state=floating
+
+pgrep -x sxhkd >/dev/null || sxhkd -c "$R/sxhkdrc" &
+rice-theme "$(cat "$R/current/name" 2>/dev/null || echo osaka-jade)"
+
+if [ -z "$RICE_TEST" ]; then
+  pgrep -x xss-lock >/dev/null || xss-lock --transfer-sleep-lock -- i3lock --nofork &
+  xset s 1500 1500; xset +dpms; xset dpms 0 0 1500
+  pgrep -x nm-applet >/dev/null || nm-applet &
+  pgrep -x copyq >/dev/null || copyq &
+  [ -e "$XDG_RUNTIME_DIR/rice-dex-done" ] || { touch "$XDG_RUNTIME_DIR/rice-dex-done"; dex --autostart --environment bspwm & }
+fi

@@ -68,6 +68,7 @@ install_node_tools() {
 install_desktop_apps() {
     "$ROOT/scripts/install-blender.sh"
     "$ROOT/scripts/install-drawio.sh"
+    "$ROOT/scripts/install-picom.sh"
 }
 
 github_access_ready() {

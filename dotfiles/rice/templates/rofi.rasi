@@ -1,0 +1,27 @@
+configuration {
+  modi: "drun,run,window";
+  show-icons: true;
+  font: "JetBrainsMono Nerd Font 11";
+  drun-display-format: "{name}";
+  display-drun: "󰍉";
+}
+* {
+  bg: ${RICE_BG}B8;
+  panel: ${RICE_BG_LIGHT}80;
+  fg: ${RICE_FG};
+  muted: ${RICE_FG_MUTED};
+  accent: ${RICE_ACCENT};
+  background-color: transparent;
+  text-color: @fg;
+}
+window { width: 560px; background-color: @bg; border: 2px; border-color: @accent; border-radius: ${RICE_RADIUS}px; padding: 14px; }
+mainbox { spacing: 10px; }
+inputbar { background-color: @panel; border-radius: ${RICE_RADIUS}px; padding: 9px 12px; children: [prompt, entry]; spacing: 10px; }
+prompt { text-color: @accent; }
+entry { placeholder: "search"; placeholder-color: @muted; }
+listview { lines: 8; fixed-height: true; spacing: 3px; scrollbar: false; }
+element { padding: 7px 10px; border-radius: ${RICE_RADIUS}px; spacing: 10px; }
+element normal.normal, element alternate.normal, element normal.active, element alternate.active, element normal.urgent, element alternate.urgent { background-color: transparent; text-color: @fg; }
+element selected.normal, element selected.active, element selected.urgent { background-color: @accent; text-color: ${RICE_BG}; }
+element-icon { size: 20px; background-color: transparent; text-color: inherit; }
+element-text { background-color: transparent; text-color: inherit; }

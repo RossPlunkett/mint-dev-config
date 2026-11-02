@@ -69,6 +69,7 @@ Installation phases:
   - RossPlunkett/nvim with Neovim 0.11+
   - Matt Pocock curated skills for coding agents
   - GNOME Terminal, i3, CopyQ commands, and portable shell config
+  - bspwm rice session: picom v13 built from source, 22 switchable rices and their Omarchy wallpapers
   - JetBrains Mono, Monofur, 3270 and HeavyData Nerd Fonts, and Courier Prime
 EOF
 
@@ -95,6 +96,7 @@ install_homebrew
 install_node_tools
 install_editor_and_skills
 "$ROOT/install-config.sh"
+"$ROOT/scripts/install-rice.sh"
 
 if ((WITH_PROJECTS)); then
     if github_access_ready; then

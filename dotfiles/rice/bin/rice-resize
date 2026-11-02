@@ -1,0 +1,8 @@
+#!/bin/bash
+# Grows or shrinks from whichever edge can move, like i3's resize mode.
+case "$1" in
+  shrink-width)  bspc node -z right -30 0 2>/dev/null || bspc node -z left 30 0 ;;
+  grow-width)    bspc node -z right 30 0 2>/dev/null || bspc node -z left -30 0 ;;
+  shrink-height) bspc node -z bottom 0 -30 2>/dev/null || bspc node -z top 0 30 ;;
+  grow-height)   bspc node -z bottom 0 30 2>/dev/null || bspc node -z top 0 -30 ;;
+esac

@@ -1,0 +1,13 @@
+#!/bin/bash
+# One bar per monitor, with the tray and status modules on the laptop panel when it exists.
+R="$HOME/.config/rice"
+pkill -x polybar; while pgrep -x polybar >/dev/null; do sleep 0.1; done
+primary=$(xrandr --query | awk '/ connected primary/{print $1; exit}')
+for m in $(bspc query -M --names); do
+  if [ "$m" = "$primary" ] || [ -z "$primary" ]; then
+    right="cpu memory wifi audio battery date tray"
+  else
+    right="cpu memory date"
+  fi
+  RICE_MONITOR=$m RICE_BAR_RIGHT=$right polybar -q -c "$R/current/polybar.ini" main >/dev/null 2>&1 &
+done

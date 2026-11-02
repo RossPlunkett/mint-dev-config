@@ -1,0 +1,65 @@
+#!/bin/bash
+# rice-theme            pick from a menu with previews
+# rice-theme next       step to the next rice
+# rice-theme list       print the rices, marking the current one
+# rice-theme NAME       switch rice
+# rice-theme --render   rebuild the current rice's files without touching running apps
+set -euo pipefail
+R="$HOME/.config/rice"
+export PATH="$R/bin:$PATH"
+current() { cat "$R/current/name" 2>/dev/null || echo osaka-jade; }
+list() { ls "$R/themes"; }
+apply=1
+case "${1:-}" in
+  --render) apply=0; name=$(current) ;;
+  list) cur=$(current); for t in $(list); do [ "$t" = "$cur" ] && echo "* $t" || echo "  $t"; done; exit 0 ;;
+  next) name=$(list | awk -v c="$(current)" 'NR==1{f=$0} p{print;x=1;exit} $0==c{p=1} END{if(!x)print f}') ;;
+  "")
+    name=$(for t in $(list); do
+      printf '%s\0icon\x1f%s\n' "$t" "$(rice-wallpaper --thumb "$t")"
+    done | rofi -dmenu -i -show-icons -p "rice" -config "$R/current/rofi.rasi" \
+      -theme-str 'listview {lines: 7;} element-icon {size: 72px;} window {width: 520px;}') || exit 0 ;;
+  *) name=$1 ;;
+esac
+[ -f "$R/themes/$name/theme.env" ] || { echo "unknown rice: $name (have: $(list | xargs))" >&2; exit 1; }
+
+set -a
+# shellcheck source=/dev/null
+. "$R/themes/$name/theme.env"
+set +a
+export RICE_NAME=$name RICE_BG_HEX=${RICE_BG#\#} RICE_SELECTION_HEX=${RICE_SELECTION#\#}
+vars=$(compgen -v RICE_ | grep -Ev '^RICE_(MONITOR|BAR_RIGHT|TEST|NVIM)$' | sed 's/^/${/; s/$/}/' | xargs)
+mkdir -p "$R/current/kitty"
+render() { envsubst "$vars" < "$R/templates/$1" > "$2"; }
+render kitty.conf "$R/current/kitty/kitty.conf"
+render picom.conf "$R/current/picom.conf"
+render polybar.ini "$R/current/polybar.ini"
+render rofi.rasi "$R/current/rofi.rasi"
+render dunstrc "$R/current/dunstrc"
+cat > "$R/current/nvim-theme.lua" <<LUA
+return { scheme = "$RICE_NVIM_SCHEME", palette = {
+  accent = "$RICE_ACCENT", selection = "$RICE_SELECTION", muted = "$RICE_MUTED", bg = "$RICE_BG",
+  bg_light = "$RICE_BG_LIGHT", fg = "$RICE_FG", fg_muted = "$RICE_FG_MUTED", red = "$RICE_RED",
+  green = "$RICE_GREEN", yellow = "$RICE_YELLOW", blue = "$RICE_BLUE", magenta = "$RICE_MAGENTA", cyan = "$RICE_CYAN",
+} }
+LUA
+echo "$name" > "$R/current/name"
+[ "$apply" = 1 ] || exit 0
+
+# picom has crashed while the bar restarts underneath it, so it stops first and starts last.
+pkill -x picom || true; while pgrep -x picom >/dev/null; do sleep 0.1; done
+bspc config focused_border_color "$RICE_ACCENT"
+bspc config normal_border_color "$RICE_SELECTION"
+bspc config active_border_color "$RICE_MUTED"
+bspc config window_gap "$RICE_GAP"
+bspc config border_width "$RICE_BORDER"
+rice-wallpaper --apply
+pkill -USR1 -x kitty || true
+rice-bar
+sleep 0.3
+picom --config "$R/current/picom.conf" --daemon >/dev/null 2>&1 || true
+if [ -z "${RICE_TEST:-}" ]; then pkill -x dunst || true; dunst -config "$R/current/dunstrc" >/dev/null 2>&1 & fi
+for s in "${XDG_RUNTIME_DIR:-/tmp}"/rice-nvim/*.sock; do
+  [ -S "$s" ] || continue
+  nvim --server "$s" --remote-expr 'luaeval("RiceApply()")' >/dev/null 2>&1 || rm -f "$s"
+done

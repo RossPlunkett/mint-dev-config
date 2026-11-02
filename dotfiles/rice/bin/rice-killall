@@ -1,0 +1,6 @@
+#!/bin/bash
+# bspwm's take on i3KillAll.sh: only managed windows, so the bar and tray survive.
+for node in $(bspc query -N -n .window); do
+  bspc node "$node" -k
+done
+bspc desktop -f 1

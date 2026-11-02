@@ -1,0 +1,69 @@
+# Same keys as the i3 config wherever bspwm has an equivalent.
+super + Return
+	kitty
+super + d
+	rofi -show drun -config ~/.config/rice/current/rofi.rasi
+# Rices: pick with previews, or step to the next one.
+super + t
+	rice-theme
+super + shift + t
+	rice-theme next
+# Wallpapers for the current rice: next, previous, or pick with previews.
+super + {_,shift + }b
+	rice-wallpaper {next,prev}
+super + alt + b
+	rice-wallpaper pick
+super + shift + q
+	bspc node -c
+super + shift + c
+	pkill -USR1 -x sxhkd; ~/.config/bspwm/bspwmrc
+super + shift + e
+	rice-quit
+super + shift + r
+	bspc wm -r
+super + shift + x
+	rice-killall
+super + shift + a
+	bspc desktop -f 5; flatpak run com.google.AndroidStudio
+super + {j,k,l,semicolon}
+	rice-focus {west,south,north,east}
+super + {Left,Down,Up,Right}
+	rice-focus {west,south,north,east}
+super + shift + {j,k,l,semicolon}
+	bspc node -s {west,south,north,east}
+super + shift + {Left,Down,Up,Right}
+	bspc node -s {west,south,north,east}
+super + {h,v}
+	bspc node -p {east,south}
+super + f
+	bspc node -t ~fullscreen
+super + shift + space
+	bspc node -t ~floating
+super + space
+	if bspc query -N -n focused.floating >/dev/null; then bspc node -f 'last.local.window.!floating'; else bspc node -f 'last.local.window.floating'; fi
+super + a
+	bspc node -f @parent
+super + e
+	bspc node @parent -R 90
+# bspwm has no tabs or stacking, so both of i3's keys toggle monocle: one full-size window at a time.
+super + {s,w}
+	bspc desktop -l next
+super + alt + {Left,Right}
+	bspc desktop -f {prev,next}.occupied
+super + {1-9,0}
+	bspc desktop -f {1-9,10}
+super + shift + {1-9,0}
+	bspc node -d {1-9,10}
+super + r : {j,k,l,semicolon,Left,Down,Up,Right}
+	rice-resize {shrink-width,grow-height,shrink-height,grow-width,shrink-width,grow-height,shrink-height,grow-width}
+# Escape is sxhkd's built-in way out of a chain, so the other two exit keys press it.
+super + r : {Return,super + r}
+	xdotool key Escape
+XF86Audio{RaiseVolume,LowerVolume}
+	pactl set-sink-volume @DEFAULT_SINK@ {+10%,-10%}
+XF86AudioMute
+	pactl set-sink-mute @DEFAULT_SINK@ toggle
+XF86AudioMicMute
+	pactl set-source-mute @DEFAULT_SOURCE@ toggle
+ctrl + alt + {_,shift + }s
+	~/.config/i3/screenshot.sh {full,region}

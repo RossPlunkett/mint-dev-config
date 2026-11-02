@@ -18,6 +18,43 @@ network-manager-gnome
 pulseaudio-utils
 dconf-cli
 
+# bspwm rice session (see dotfiles/rice); picom itself is built from source
+bspwm
+sxhkd
+polybar
+rofi
+kitty
+feh
+dunst
+gettext-base
+x11-xserver-utils
+python3-pil
+
+# picom v13 build dependencies (scripts/install-picom.sh)
+libconfig-dev
+libdbus-1-dev
+libegl-dev
+libev-dev
+libgl-dev
+libepoxy-dev
+libpcre2-dev
+libpixman-1-dev
+libx11-xcb-dev
+libxcb1-dev
+libxcb-composite0-dev
+libxcb-damage0-dev
+libxcb-glx0-dev
+libxcb-image0-dev
+libxcb-present-dev
+libxcb-randr0-dev
+libxcb-render0-dev
+libxcb-render-util0-dev
+libxcb-shape0-dev
+libxcb-util-dev
+libxcb-xfixes0-dev
+meson
+uthash-dev
+
 # Core development tools
 bash-completion
 build-essential

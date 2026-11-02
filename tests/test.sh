@@ -39,6 +39,26 @@ HOME="$home" "$ROOT/install-config.sh" --no-dconf >/dev/null
 [[ "$(cat "$home/.omp/agent/config.yml")" == 'my omp settings' ]] || fail 'existing OMP config replaced'
 pass 'new links, link handler and OMP config apply without replacing OMP settings'
 
+# The bspwm rice links its tracked files, and every rice renders and names a recorded wallpaper.
+[[ "$(readlink -f "$home/.config/bspwm/bspwmrc")" == "$ROOT/dotfiles/bspwm/bspwmrc" ]] || fail 'bspwmrc not linked'
+[[ "$(readlink -f "$home/.config/rice/bin")" == "$ROOT/dotfiles/rice/bin" ]] || fail 'rice scripts not linked'
+for env in "$ROOT"/dotfiles/rice/themes/*/theme.env; do
+    theme="$(basename "$(dirname "$env")")"
+    [[ "$(readlink -f "$home/.config/rice/themes/$theme/theme.env")" == "$env" ]] || fail "rice $theme not linked"
+    wallpaper="$(. "$env"; printf '%s' "$RICE_WALLPAPER")"
+    grep -q "^$theme	$wallpaper	https://" "$ROOT/manifests/wallpapers.tsv" || fail "rice $theme default wallpaper not recorded"
+    if command -v envsubst >/dev/null 2>&1; then
+        mkdir -p "$home/.config/rice/current"
+        printf '%s\n' "$theme" >"$home/.config/rice/current/name"
+        HOME="$home" "$home/.config/rice/bin/rice-theme" --render || fail "rice $theme does not render"
+        ! grep -q '\${RICE_' "$home/.config/rice/current/picom.conf" "$home/.config/rice/current/kitty/kitty.conf" || fail "rice $theme leaves placeholders"
+    fi
+done
+while IFS=$'\t' read -r theme _; do
+    [[ "$theme" == \#* ]] || [[ -f "$ROOT/dotfiles/rice/themes/$theme/theme.env" ]] || fail "wallpaper for unknown rice $theme"
+done <"$ROOT/manifests/wallpapers.tsv"
+pass 'bspwm rice links, renders every rice, and records every default wallpaper'
+
 # The always-on script must reach all three layers, and undo them, without touching this machine.
 stubs="$work/stubs" calls="$work/always-on-calls"
 mkdir -p "$stubs" "$work/always-on"

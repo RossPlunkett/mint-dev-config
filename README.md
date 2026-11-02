@@ -68,6 +68,19 @@ Links open through `chrome-clean-link`, the default browser handler: a new `chro
 
 Automatic locking remains enabled, and the screen turns off after 25 minutes idle. **To keep a machine awake for unattended agents, run `./scripts/install-always-on.sh`** (`--disable` undoes it): it blocks automatic sleep while logged in, ignores the lid and turns off Cinnamon's idle sleep. Bootstrap never applies it. Displays use i3 and X defaults; per-desk monitor layouts are not recorded here.
 
+## bspwm rice session
+
+A third login session, **bspwm**, sits beside Cinnamon and i3 without touching either: a transparent, blurred, animated tiling desktop with 22 switchable rices taken from Omarchy's themes (Osaka Jade is the default). Choose it at the login screen.
+
+- `dotfiles/bspwm/bspwmrc` starts the session; `dotfiles/rice/` holds the keybindings (`sxhkdrc`, i3's keys plus the ones below), the `rice-*` scripts, templates for kitty, polybar, rofi, picom and dunst, and one `theme.env` per rice.
+- **Rices:** `Super+T` picks one with previews, `Super+Shift+T` steps to the next, or click the rice name on the bar. Kitty, the bar, borders, gaps, launcher, notifications and running Neovim restyle in place.
+- **Wallpapers:** `Super+B`/`Super+Shift+B` step through the current rice's wallpapers, `Super+Alt+B` picks one, or scroll on the rice name. Each rice remembers its last wallpaper.
+- **Neovim:** `RICE_NVIM` is set only in this session, so the colorscheme follows the rice there and nowhere else. RossPlunkett/nvim's `init.lua` loads the hook.
+- **Wallpaper images** are Omarchy's artwork and stay out of Git: `manifests/wallpapers.tsv` pins each to an Omarchy commit and `scripts/install-rice.sh` downloads and scales them.
+- **picom v13** is built from source into `~/.local/bin` by `scripts/install-picom.sh`; Mint's v10 has no animations.
+- Rendered files (`~/.config/rice/current/`) and display layouts stay local. Put xrandr lines for a particular desk in `~/.config/bspwm/local.sh`, which `bspwmrc` sources when present.
+- To add a rice, create `dotfiles/rice/themes/NAME/theme.env` with the same keys as the others and list its wallpapers in the manifest.
+
 ## Per-machine Blender graphics
 
 Blender 5.2 requires newer graphics than Intel HD Graphics 4000 provides: that GPU reports OpenGL 4.2, below the [current Blender requirements](https://www.blender.org/download/requirements/). On felixpad, the default render crashed; Mesa software OpenGL successfully rendered the same scene. Software graphics retain Blender 5.2 compatibility but use CPU resources and can be substantially slower.
