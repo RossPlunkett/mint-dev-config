@@ -66,7 +66,7 @@ Bash retains its caller's working directory rather than automatically entering a
 
 Links open through `chrome-clean-link`, the default browser handler: a new `chrome-clean` window on the next unused numbered i3 workspace.
 
-Automatic locking remains enabled, and the screen turns off after 25 minutes idle. **To keep a machine awake for unattended agents, run `./scripts/install-always-on.sh`** (`--disable` undoes it): it blocks automatic sleep while logged in, ignores the lid and turns off Cinnamon's idle sleep. Bootstrap never applies it. The guarded three-monitor desk layout script is retained as a **manual desk-specific option**, not invoked by the shared i3 startup. Run `~/.config/i3/monitor-layout.sh` only for that desk; missing expected connectors leave the active layout unchanged.
+Automatic locking remains enabled, and the screen turns off after 25 minutes idle. **To keep a machine awake for unattended agents, run `./scripts/install-always-on.sh`** (`--disable` undoes it): it blocks automatic sleep while logged in, ignores the lid and turns off Cinnamon's idle sleep. Bootstrap never applies it. Displays use i3 and X defaults; per-desk monitor layouts are not recorded here.
 
 ## Per-machine Blender graphics
 

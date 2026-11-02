@@ -29,6 +29,7 @@ link_file() {
 # Retire only links owned by this checkout; leave independently managed files alone.
 for retired in \
     "dotfiles/i3/ROFWorkflow.sh|.config/i3/ROFWorkflow.sh" \
+    "dotfiles/i3/monitor-layout.sh|.config/i3/monitor-layout.sh" \
     "dotfiles/local-bin/karaoke-workflow|.local/bin/karaoke-workflow" \
     "dotfiles/t3/keybindings.json|.t3/userdata/keybindings.json"; do
     source="$ROOT/${retired%%|*}"
@@ -45,7 +46,6 @@ link_file "$ROOT/dotfiles/bashrc" "$HOME/.bashrc"
 link_file "$ROOT/dotfiles/profile" "$HOME/.profile"
 link_file "$ROOT/dotfiles/i3/config" "$HOME/.config/i3/config"
 link_file "$ROOT/dotfiles/i3/i3KillAll.sh" "$HOME/.config/i3/i3KillAll.sh"
-link_file "$ROOT/dotfiles/i3/monitor-layout.sh" "$HOME/.config/i3/monitor-layout.sh"
 link_file "$ROOT/dotfiles/i3/screenshot.sh" "$HOME/.config/i3/screenshot.sh"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean" "$HOME/.local/bin/chrome-clean"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean-link" "$HOME/.local/bin/chrome-clean-link"

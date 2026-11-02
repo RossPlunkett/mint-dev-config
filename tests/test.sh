@@ -18,11 +18,12 @@ printf 'original shell configuration\n' >"$home/.bashrc"
 printf 'independently managed karaoke launcher\n' >"$home/.local/bin/karaoke-workflow"
 ln -s "$ROOT/dotfiles/i3/ROFWorkflow.sh" "$home/.config/i3/ROFWorkflow.sh"
 ln -s "$ROOT/dotfiles/t3/keybindings.json" "$home/.t3/userdata/keybindings.json"
+ln -s "$ROOT/dotfiles/i3/monitor-layout.sh" "$home/.config/i3/monitor-layout.sh"
 HOME="$home" "$ROOT/install-config.sh" --no-dconf >/dev/null
 backup="$(find "$home/.config-backups" -name .bashrc -print -quit)"
 [[ -n "$backup" ]] && [[ "$(cat "$backup")" == 'original shell configuration' ]] || fail 'original shell configuration lost'
 [[ "$(readlink -f "$home/.bashrc")" == "$ROOT/dotfiles/bashrc" ]] || fail 'shell config not applied'
-[[ ! -L "$home/.config/i3/ROFWorkflow.sh" && ! -L "$home/.t3/userdata/keybindings.json" ]] || fail 'retired managed links remain'
+[[ ! -L "$home/.config/i3/ROFWorkflow.sh" && ! -L "$home/.config/i3/monitor-layout.sh" && ! -L "$home/.t3/userdata/keybindings.json" ]] || fail 'retired managed links remain'
 [[ "$(cat "$home/.local/bin/karaoke-workflow")" == 'independently managed karaoke launcher' ]] || fail 'unmanaged launcher changed'
 pass 'configuration replacement preserves originals and retires only owned links'
 

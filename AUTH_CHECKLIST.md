@@ -30,7 +30,6 @@ The bootstrap records software and portable preferences, not application login s
 - [ ] Check CopyQ pin/tag commands; do not restore old clipboard history.
 - [ ] Launch Blender and draw.io. Add any required Blender add-ons separately; no scene, add-on credential, or application session state is copied automatically.
 - [ ] Test **Super+D → o → Enter** after the Ross-o-Fone checkout and OMP authentication are ready.
-- [ ] Apply the optional guarded monitor script only on the matching three-monitor desk; otherwise configure that machine's displays locally.
 - [ ] Run `~/mint-dev-config/doctor.sh` from an interactive terminal and resolve every `MISS` or `OLD` result.
 
 Never add new tokens, `.env` files, SSH/private keys, Android keystores, Tailscale state, or application credential databases to this repository.
