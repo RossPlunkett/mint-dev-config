@@ -25,3 +25,7 @@ Claude Code hooks also run inside bridge turns. A Claude-only hook can skip them
 Add prompt instructions through `systemPromptOptions.sections`, appended instructions, or messages. Preserve Pi's structured prompt; wholesale `systemPrompt`/`forceSystemPrompt` replacement can cause `prompt-capture` rejection. This loader reads instruction files once. Start a new session after changing them.
 
 Abort, compaction, tree navigation, errors, and reopening a session can rebuild Claude Code history and miss the prompt cache. Avoid unnecessary abort/retry cycles. A Claude process serves a turn, not a permanent idle worker.
+
+## OpenAI models
+
+On every machine, OpenAI models run through the ChatGPT login: `openai-codex/<model>`. Never pick or pass an `openai/<model>`.

@@ -9,6 +9,8 @@ set -euo pipefail
 # from its upstream directory when that contains SKILL.md, otherwise from the
 # bundled copy in fallback-skills/<source-id>/<skill-name>. The chosen
 # directory is copied (symlinks dereferenced) into ~/.agents/skills/<skill-name>.
+# A clone-url of "bundled" means the skill lives in this repository: no clone,
+# always the bundled copy.
 # Pi and OMP discover it there; other supported CLIs receive compatibility links.
 # Nothing inside a downloaded skill is executed.
 
@@ -80,6 +82,7 @@ trap 'rm -rf "$work"' EXIT
 declare -A clone_dir=()
 for source in "${sources[@]}"; do
     url="${source_url[$source]}"
+    [[ "$url" == bundled ]] && continue
     destination="$work/clones/$source"
     log fetch "$source $url"
     if timeout "$CLONE_TIMEOUT" git \
@@ -203,7 +206,11 @@ for row in "${rows[@]}"; do
     if [[ -z "$chosen" ]]; then
         if usable_skill_dir "$fallback" "$fallback"; then
             chosen="$fallback"
-            log fallback "$name from ${fallback#"$ROOT"/}"
+            if [[ "${source_url[$source]}" == bundled ]]; then
+                log bundled "$name from ${fallback#"$ROOT"/}"
+            else
+                log fallback "$name from ${fallback#"$ROOT"/}"
+            fi
         else
             warn error "$name: no upstream copy and bundled fallback missing at ${fallback#"$ROOT"/}"
             failed+=("$name")

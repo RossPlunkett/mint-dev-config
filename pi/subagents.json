@@ -15,5 +15,6 @@
     "steerRun": "auto",
     "inspectorOpen": "auto",
     "projectOpen": "auto"
-  }
+  },
+  "timeoutMs": 2147483647
 }

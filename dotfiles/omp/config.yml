@@ -1,0 +1,7 @@
+setupVersion: 2
+modelRoles:
+  default: anthropic/claude-opus-5-5:medium
+dev:
+  autoqaConsent: granted
+claudeResets:
+  autoRedeem: "no"

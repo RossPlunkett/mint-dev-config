@@ -45,6 +45,16 @@ HOME="$work/protected" bash "$fixture/scripts/install-skills.sh" >/dev/null 2>&1
 [[ "$(cat "$work/protected/.agents/skills/demo/SKILL.md")" == 'local custom instructions' ]] || fail 'custom skill overwritten'
 pass 'existing custom skill is preserved'
 
+# A bundled skill never clones and installs from this repository.
+mkdir -p "$fixture/fallback-skills/personal/mine" "$work/bundled"
+printf '%s\n' '---' 'name: mine' 'description: Bundled fixture.' '---' >"$fixture/fallback-skills/personal/mine/SKILL.md"
+printf 'personal\tbundled\tmine\tmine\n' >"$fixture/manifests/skills.tsv"
+output="$(HOME="$work/bundled" bash "$fixture/scripts/install-skills.sh" 2>&1)"
+cmp "$fixture/fallback-skills/personal/mine/SKILL.md" "$work/bundled/.agents/skills/mine/SKILL.md" || fail 'bundled skill not installed'
+[[ "$output" != *fetch* && "$output" == *bundled* ]] || fail 'bundled skill attempted a download'
+printf 'example\t%s\tskills/removed\tdemo\n' "$remote" >"$fixture/manifests/skills.tsv"
+pass 'bundled skill installs without a download'
+
 # Migrate the previous backing store and native aliases without leaving duplicates.
 legacy="$work/legacy"
 old_store="$legacy/.local/share/mint-dev-config-skills"

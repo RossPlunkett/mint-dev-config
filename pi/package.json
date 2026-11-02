@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "pi": {
-    "extensions": ["./extensions/flair.mjs", "./extensions/system-prompts.mjs", "./extensions/chat-title.mjs"],
+    "extensions": ["./extensions/flair.mjs", "./extensions/system-prompts.mjs", "./extensions/chat-title.mjs", "./extensions/usage.mjs"],
     "themes": ["./themes/felix-night.json"],
     "prompts": ["./prompts/browser-test.md"]
   }

@@ -48,8 +48,31 @@ link_file "$ROOT/dotfiles/i3/i3KillAll.sh" "$HOME/.config/i3/i3KillAll.sh"
 link_file "$ROOT/dotfiles/i3/monitor-layout.sh" "$HOME/.config/i3/monitor-layout.sh"
 link_file "$ROOT/dotfiles/i3/screenshot.sh" "$HOME/.config/i3/screenshot.sh"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean" "$HOME/.local/bin/chrome-clean"
+link_file "$ROOT/dotfiles/local-bin/chrome-clean-link" "$HOME/.local/bin/chrome-clean-link"
 link_file "$ROOT/dotfiles/local-bin/o" "$HOME/.local/bin/o"
+link_file "$ROOT/dotfiles/local-bin/playwright" "$HOME/.local/bin/playwright"
+link_file "$ROOT/dotfiles/local-bin/playwright-cli" "$HOME/.local/bin/playwright-cli"
+link_file "$ROOT/dotfiles/mcp/mcp.json" "$HOME/.config/mcp/mcp.json"
 link_file "$ROOT/dotfiles/copyq/copyq-commands.ini" "$HOME/.config/copyq/copyq-commands.ini"
+
+# OMP rewrites its own config, so it gets a copy, and only when it has none.
+if [[ ! -e "$HOME/.omp/agent/config.yml" ]]; then
+    install -D -m 0600 "$ROOT/dotfiles/omp/config.yml" "$HOME/.omp/agent/config.yml"
+    printf 'copied  %s\n' "$HOME/.omp/agent/config.yml"
+fi
+
+# Links open through chrome-clean-link. The launcher needs an absolute path.
+mkdir -p "$HOME/.local/share/applications"
+sed "s|@HOME@|$HOME|g" "$ROOT/dotfiles/applications/chrome-clean-link.desktop" \
+    >"$HOME/.local/share/applications/chrome-clean-link.desktop"
+if command -v xdg-mime >/dev/null 2>&1; then
+    for mime in text/html x-scheme-handler/http x-scheme-handler/https; do
+        xdg-mime default chrome-clean-link.desktop "$mime"
+    done
+    printf 'set     default browser to chrome-clean-link\n'
+else
+    printf 'skip    xdg-mime is not installed\n'
+fi
 
 if ((APPLY_DCONF)); then
     if command -v dconf >/dev/null 2>&1; then

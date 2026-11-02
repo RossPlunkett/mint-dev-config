@@ -13,7 +13,7 @@ export PATH="$HOME/.local/bin:$PATH"
 pi --version
 # Node 22.19+ is required; the upstream installer can provision it.
 # Alternative with an existing Node installation:
-# npm install -g --ignore-scripts @earendil-works/pi-coding-agent@1.1.0
+# npm install -g --ignore-scripts @earendil-works/pi-coding-agent@1.4.0
 npm install -g @anthropic-ai/claude-code
 ./scripts/install-pi.sh
 pi list
@@ -21,7 +21,7 @@ cd /path/to/your/project
 pi
 ```
 
-The tested baseline is **Pi 1.1.0**, **pi-claude-bridge 0.9.2**, **pi-subagents 0.76.1**, and **pi-omp-theme 1.0.15**. The profile installer accepts Pi 1.1.0+ and installs these extension pins, merging recorded preferences over existing settings while retaining unrelated keys/packages. It backs up changed config under `~/.config-backups/pi-*`; it does not copy or modify auth/session databases. It honors `PI_CODING_AGENT_DIR` when set. Rerun to restore preferences. This intentionally reapplies the recorded model/theme/trust/authority choices, not just missing defaults.
+The tested baseline is **Pi 1.4.0**, **pi-claude-bridge 0.9.2**, **pi-subagents 0.83.0**, **pi-omp-theme 1.0.15**, **pi-mcp-adapter 5.2.0**, and **pi-usage-limits 0.1.4**. The profile installer accepts Pi 1.4.0+ and installs these extension pins, merging recorded preferences over existing settings while retaining unrelated keys/packages. It backs up changed config under `~/.config-backups/pi-*`; it does not copy or modify auth/session databases. It honors `PI_CODING_AGENT_DIR` when set. Rerun to restore preferences. This intentionally reapplies the recorded model/theme/trust/authority choices, not just missing defaults.
 
 The local Pi package is loaded **from this checkout**. Keep it in place. After moving it, rerun the installer from its new location and retire the old local package entry with `pi remove /old/path/pi`. A known `new-agent-office/deploy/container/pi` package entry and the previous standalone `extensions/chat-title.ts` widget are retired to avoid duplicate resources; arbitrary custom extensions remain your responsibility.
 
@@ -30,7 +30,7 @@ Current machine: `~/.local/bin/pi` points to `~/.pi/agent/bin/pi`, which selects
 ## Authentication and model selection
 
 - Run Claude Code and complete its subscription sign-in. The bridge uses **Claude Code's login**, not Pi's Anthropic `/login`. This profile records `provider.plan: max`; select the actual plan on other accounts. A Max setting does not grant a subscription or guarantee every model's context size.
-- Run Pi's `/login` for OpenAI or another native provider. The recorded startup model is `openai/gpt-6.1-sol` with medium thinking. If unavailable for that account/catalog, select an available exact ID through `/model` and update your local defaults; no custom gateway/model endpoint is bundled.
+- Run Pi's `/login` for OpenAI or another native provider. The recorded startup model is `claude-bridge/claude-opus-5-5` with medium thinking. OpenAI models always run through the ChatGPT login as `openai-codex/<model>`, never `openai/<model>`. If unavailable for that account/catalog, select an available exact ID through `/model` and update your local defaults; no custom gateway/model endpoint is bundled.
 - Bridge models appear under `claude-bridge/`, for example Opus/Sonnet/Haiku. Inspect `/model` or subagents' `action:"models"` rather than assuming a historical ID is still available.
 - Subscription-backed launches must not inherit `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, or `ANTHROPIC_BASE_URL`. For a one-off clean launch: `env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_BASE_URL pi`. Do not globally erase credentials used by other tools.
 - AskClaude stays disabled. The bridge's strict MCP and auto-memory defaults are not overridden. Hooks in `~/.claude/settings.json` also fire in bridge turns; skip Claude-only hooks with `[ -n "$PI_CODING_AGENT" ] && exit 0`.
@@ -43,11 +43,13 @@ Current machine: `~/.local/bin/pi` points to `~/.pi/agent/bin/pi`, which selects
 | OMP theme package + `piOmpTheme` setting | OMP preset: framed editor and model/thinking/Git/context status, auto-applies Felix Night. Uses the package defaults rather than adding core monkey patches. |
 | `extensions/flair.mjs` | Cyan/purple animated “Working” text; native Pi indicator owns the 120 ms timer. `/flair [on|off]` toggles it. No extra process or independent timer. |
 | `extensions/chat-title.mjs` | Right-aligned session name above the editor, visible even when the OMP editor replaces the footer; refreshes on session start/rename, truncates by terminal columns, sanitizes controls, TUI-only widget. |
-| `extensions/chat-namer.mjs` | Titles an unnamed chat after prompt 1 and refines it after prompt 3. Manual `/name` is respected. Uses Claude Haiku 5.5 at medium effort, a 30-second timeout, no tools/MCP/settings/session persistence, at most 60 title characters. Failure leaves the existing name/“Untitled chat”. |
+| `extensions/chat-namer.mjs` | Titles an unnamed chat after prompt 1 and refines it after prompt 3. Manual `/name` is respected. Uses Claude Haiku 5.5 at medium effort, falling back to `openai-codex/gpt-6-luna` through Pi if Claude gives no title, with a 30-second timeout per attempt, no tools/MCP/settings/session persistence, at most 60 title characters. Failure leaves the existing name/“Untitled chat”. |
 | `extensions/system-prompts.mjs` | Reads `instructions/*.md` once and adds named `systemPromptOptions.sections` for every provider. Explicitly loaded in children; avoids replacing the bridge's captured prompt. |
 | `instructions/claude-in-pi-considerations.md` | Agent-visible bridge authentication, native delegation, foreground child prompt capture, supervision, prompt compatibility and cache gotchas. |
-| `subagents.json` | Rich inline output; fleet above editor; redundant async widget off; foreground default for applicable single-run calls; fresh child context; eager tool activation; recorded auto authority policy. |
-| `settings.json` → `subagents` | Medium child thinking; installer resolves bridge and instruction-loader paths for foreground/background children while leaving ambient UI extensions out. Model normally inherits the parent unless explicitly overridden. |
+| `subagents.json` | Rich inline output; fleet above editor; redundant async widget off; foreground default for applicable single-run calls; fresh child context; eager tool activation; recorded auto authority policy; effectively no child timeout. |
+| `extensions/usage.mjs`, `usage-refresh.mjs` | `/usage` fetches Claude and Codex subscription limits without inference; `/usage cached` skips the network. Uses the `pi-usage-limits` cache and Claude Agent SDK from the bridge. |
+| `pi-mcp-adapter` + `~/.config/mcp/mcp.json` | MCP through the adapter rather than Pi's built-in (`-builtin:mcp`). `dotfiles/mcp/mcp.json` records the Blender server. |
+| `settings.json` → `subagents` | Medium child thinking; all built-in roles inherit the session's tools; installer resolves bridge and instruction-loader paths for foreground/background children while leaving ambient UI extensions out. Model normally inherits the parent unless explicitly overridden. |
 | `prompts/browser-test.md` | `/browser-test <url and flow>`: named isolated Playwright CLI work, screenshots, console/network checks, 60-second idle timeout, close browser on success/failure. |
 | `settings.json` → terminal | Fullscreen UI, compact startup header, inline images where supported, terminal progress hints. |
 | Shared skills | `~/.agents/skills`, installed separately by `scripts/install-skills.sh`; same copies used by Pi/OMP and compatibility links for other CLIs. No duplicate Pi skill tree. |
@@ -58,13 +60,14 @@ The auto-namer sends excerpts of the first three user prompts (up to 600 charact
 
 ## Browser testing (optional CLI)
 
+Bootstrap runs `scripts/install-playwright.sh`, which installs Playwright, its CLI and Chromium under `~/.local/share/pi-playwright`.
+
 ```bash
-npm install -g @playwright/cli
 playwright-cli --help
 # In Pi: /browser-test http://localhost:3000 test the signup flow
 ```
 
-The desktop prompt selects installed Google Chrome with `--browser=chrome`; request `--headed` if needed. Browsers only start for browser work and add memory while active. Reuse a project's existing Playwright suite for durable regression tests. The office container instead supplies an image-owned Chromium/cache wrapper and isolated headless launch config; that container-specific wrapper is not a desktop prerequisite.
+The `playwright-cli` wrapper uses headless Chromium and an isolated profile from `pi/browser.json`; request `--headed` if needed. Browsers only start for browser work and add memory while active. Reuse a project's existing Playwright suite for durable regression tests. The office container instead supplies an image-owned Chromium/cache wrapper and isolated headless launch config; that container-specific wrapper is not a desktop prerequisite.
 
 ## Agent visibility and subagent operation
 
@@ -80,7 +83,7 @@ Abort, `/compact`, tree navigation, API errors and session reopen can rebuild Cl
 
 The older `~/dev/pi-setup` was an isolated agent-dir experiment with its own launcher, direct Anthropic Opus default, optional Playwright installed under `tools/`, `flair-check.mjs`, and `memory-check.py`. Its README predates the active bridge/managed install and says packages were not installed; **that is not the current setup**. Never copy its `auth.json`, model store, or sessions. Its 150 MB idle target was a measurement goal, not a cap or production guarantee; the experiment disabled optional OMP UI if it exceeded that target. Active children, browsers, conversation growth and startup peaks were outside that test.
 
-Bundled title/namer/flair/theme source was taken from `RossPlunkett/new-agent-office` at commit `7f3bbeff783677dd01824f035457dde309c93f50`, `deploy/container/pi/`. The desktop display-only title widget lived separately in `~/.pi/agent/extensions/chat-title.ts`; this bundle consolidates it with the office auto-namer so only one widget owns the key. The office instruction loader depended on a sibling `system-prompts/` directory; ours reads bundled `instructions/` instead. Browser prompt comes from the desktop experiment with its launcher-only claim removed. Upstream third-party packages are installed, not vendored.
+Bundled usage source, plus the namer's fallback and output bound and the title's newest-prompt guard, were brought over from the office on 2026-11-02, leaving out its policy lookup and n8n prompt handling. Bundled title/namer/flair/theme source was originally taken from `RossPlunkett/new-agent-office` at commit `7f3bbeff783677dd01824f035457dde309c93f50`, `deploy/container/pi/`. The desktop display-only title widget lived separately in `~/.pi/agent/extensions/chat-title.ts`; this bundle consolidates it with the office auto-namer so only one widget owns the key. The office instruction loader depended on a sibling `system-prompts/` directory; ours reads bundled `instructions/` instead. Browser prompt comes from the desktop experiment with its launcher-only claim removed. Upstream third-party packages are installed, not vendored.
 
 ## Verification and maintenance
 

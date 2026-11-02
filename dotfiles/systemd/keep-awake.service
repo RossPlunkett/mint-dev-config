@@ -1,0 +1,11 @@
+[Unit]
+Description=Prevent automatic sleep while logged in (including locked screens)
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/systemd-inhibit --what=sleep:idle --who=keep-awake --why="Keep overnight Pi sessions running" --mode=block /usr/bin/sleep infinity
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

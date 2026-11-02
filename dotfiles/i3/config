@@ -16,6 +16,10 @@ client.background             #000000
 
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+# Turn the screen off after 25 minutes without keyboard or mouse activity.
+exec_always --no-startup-id xset s 1500 1500
+exec_always --no-startup-id xset +dpms
+exec_always --no-startup-id xset dpms 0 0 1500
 exec --no-startup-id nm-applet
 exec --no-startup-id copyq
 

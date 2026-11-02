@@ -7,13 +7,13 @@ if (($#)); then
     exit 2
 fi
 if ! command -v pi >/dev/null 2>&1; then
-    npm install --global --ignore-scripts @earendil-works/pi-coding-agent@1.1.0
+    npm install --global --ignore-scripts @earendil-works/pi-coding-agent@1.4.0
 fi
 python3 - "$(pi --version)" <<'PY'
 import sys
 version = tuple(int(n) for n in sys.argv[1].strip().split('.')[:3])
-if version < (1, 1, 0):
-    raise SystemExit('Pi 1.1.0+ required. Update Pi using its original install method first.')
+if version < (1, 4, 0):
+    raise SystemExit('Pi 1.4.0+ required. Update Pi using its original install method first.')
 PY
 
 # Merge preferences, preserving unrelated settings and never opening authentication files.
@@ -86,8 +86,10 @@ if backup:
 PY
 
 pi install npm:pi-claude-bridge@0.9.2
-pi install npm:pi-subagents@0.76.1
+pi install npm:pi-subagents@0.83.0
 pi install npm:@nguyenquangthai/pi-omp-theme@1.0.15
+pi install npm:pi-mcp-adapter@5.2.0
+pi install npm:pi-usage-limits@0.1.4
 pi install "$ROOT/pi"
 printf '\nPi profile installed. Keep this checkout in place; start a NEW session.\n'
 printf 'Authenticate Claude Code separately; use Pi /login for OpenAI. See %s/pi/README.md.\n' "$ROOT"

@@ -29,9 +29,10 @@ Log out and select **i3** at the login screen. Log out or reboot after Docker gr
 - Homebrew Neovim, GitHub CLI, lazygit, gitui, dysk, and LuaRocks. Node and `http-server` are not declared in Homebrew.
 - NVM Node 22; npm Claude Code, Railway CLI, `http-server`, Bun, and Pi (`@earendil-works/pi-coding-agent`).
 - **OMP and Codex standalone installers**, OpenCode, CodeRabbit, uv, and uv-managed trafilatura.
-- **Blender 5.2.2 LTS** from the official Linux x64 archive, installed outside Downloads; draw.io from its official desktop release.
-- Graphviz, tmux, btop, htop, ncdu, ranger, tig, glab, Xvfb, yt-dlp, OBS Studio, Kdenlive, nload, and cava.
-- JetBrains Mono Nerd Font and Courier Prime; RossPlunkett/nvim and Matt Pocock's curated agent skills.
+- **Blender 5.2.2 LTS** from the official Linux x64 archive, installed outside Downloads, with Blender MCP from the pinned `mcp-for-blender` package for Claude Code and Pi; draw.io from its official desktop release.
+- Playwright and `playwright-cli` under `~/.local/share/pi-playwright`, with Chromium.
+- openssh-server, cmatrix, Graphviz, tmux, btop, htop, ncdu, ranger, tig, glab, Xvfb, yt-dlp, OBS Studio, Kdenlive, nload, and cava.
+- JetBrains Mono, Monofur, 3270 and HeavyData Nerd Fonts and Courier Prime; RossPlunkett/nvim and Matt Pocock's curated agent skills.
 
 APT, Homebrew, Flatpak, and project inventories live in `manifests/`. Other official installer recipes live in `scripts/` and `lib/install.sh`. Package-manager dependencies are not a second curated application inventory.
 
@@ -39,7 +40,7 @@ APT, Homebrew, Flatpak, and project inventories live in `manifests/`. Other offi
 
 `scripts/install-skills.sh` downloads the sources in `manifests/skills.tsv`. It prefers each requested upstream skill directory. If the download fails or that directory no longer contains `SKILL.md`, it uses the complete bundled copy in `fallback-skills/` and logs that fallback explicitly. A fallback is a recovery snapshot, not the preferred update source.
 
-The inventory includes **bro**, **wayfinder**, **grill-me**, **Matt Pocock's tdd**, **pstack unslop**, and the installed **Caveman and Ponytail skill families**, alongside the existing Matt Pocock baseline. Source URLs, bundled snapshot provenance, and licenses are recorded in [fallback-skills/README.md](fallback-skills/README.md).
+The inventory includes **bro**, **wayfinder**, **grill-me**, **Matt Pocock's tdd**, **pstack unslop**, and the installed **Caveman and Ponytail skill families**, alongside the existing Matt Pocock baseline. **agentic** and **show-me** have no upstream: they are marked `bundled` and always install from `fallback-skills/personal/`. **rofdev** and **officedev** deliberately stay out of this repository; copy them from their project repositories' master. Source URLs, bundled snapshot provenance, and licenses are recorded in [fallback-skills/README.md](fallback-skills/README.md).
 
 Selected copies live directly in **`~/.agents/skills`**, the one shared skill directory Pi and OMP discover automatically. No per-skill directories or links are created in `~/.pi/agent/skills` or `~/.omp/agent/skills`. Claude, Codex, and OpenCode receive compatibility links to these same shared copies, not extra copies. Existing installer-owned native links and the old backing store are retired during migration; independently managed custom skills are preserved. Downloading skill content does not execute its scripts or install the source repository's full plugin, hooks, services, or MCP integration.
 
@@ -53,7 +54,7 @@ This records the trusted workstation's automatic project trust and subagent auth
 
 ## Shell and desktop preferences
 
-GNOME Terminal uses a black background, **blue text `rgb(52,71,176)`**, Ubuntu Mono 12, 7% transparency, no scrollbar/bell, and a hidden menubar. CopyQ's pin/tag command preferences are recorded; clipboard history is not.
+GNOME Terminal uses a black background, **cyan text `rgb(59,201,196)`**, Monofur Nerd Font Mono 12, 7% transparency, no scrollbar/bell, and a hidden menubar. CopyQ's pin/tag command preferences are recorded; clipboard history is not.
 
 `o` is installed in `~/.local/bin`. **Super+D → o → Enter** opens GNOME Terminal and visibly types the workspace change and OMP command through xdotool. Its default workspace is `~/dev/ross-o-fone/csoundfreak`; `ROF_WORKSPACE` changes the parent workspace and `O_KEY_DELAY_MS` changes typing speed. A failed workspace change must not launch OMP in the wrong directory. Keep focus on the new terminal while the keystrokes run.
 
@@ -63,7 +64,9 @@ Bash retains its caller's working directory rather than automatically entering a
 
 `chrome-clean` remains an explicit helper. It deletes the Chrome Default profile's session-recovery data before launching Chrome; do not use it when you want session restoration.
 
-Automatic locking remains enabled. This machine's unattended no-lock/no-blank policy is not the shared default. The guarded three-monitor desk layout script is retained as a **manual desk-specific option**, not invoked by the shared i3 startup. Run `~/.config/i3/monitor-layout.sh` only for that desk; missing expected connectors leave the active layout unchanged.
+Links open through `chrome-clean-link`, the default browser handler: a new `chrome-clean` window on the next unused numbered i3 workspace.
+
+Automatic locking remains enabled, and the screen turns off after 25 minutes idle. **To keep a machine awake for unattended agents, run `./scripts/install-always-on.sh`** (`--disable` undoes it): it blocks automatic sleep while logged in, ignores the lid and turns off Cinnamon's idle sleep. Bootstrap never applies it. The guarded three-monitor desk layout script is retained as a **manual desk-specific option**, not invoked by the shared i3 startup. Run `~/.config/i3/monitor-layout.sh` only for that desk; missing expected connectors leave the active layout unchanged.
 
 ## Per-machine Blender graphics
 
@@ -83,7 +86,7 @@ This records a local marker at `~/.config/mint-dev-config/blender-software-rende
 
 ## Exclusions and machine state
 
-Do not provision T3 (desktop, CLI, service, shortcuts, or URL handler), Zig, karaoke projects/workflows, Antigravity, REAPER, cmatrix, neofetch, ChatGPT desktop, Input Leap, or Steam/games. Excluded tools already present on this machine are left alone. Previously managed old workflow and T3-keybinding links are backed up when configuration is reapplied; independently managed files are not removed.
+Do not provision T3 (desktop, CLI, service, shortcuts, or URL handler), Zig, karaoke projects/workflows, Antigravity, REAPER, neofetch, ChatGPT desktop, Input Leap, or Steam/games. Excluded tools already present on this machine are left alone. Previously managed old workflow and T3-keybinding links are backed up when configuration is reapplied; independently managed files are not removed.
 
 Do not copy browser profiles, clipboard history, application sessions, Docker images/volumes, Android signing keys, Tailscale state, SSH keys, or authentication databases. Provider and service sign-ins are per machine. Git identity and GPU drivers are per machine.
 

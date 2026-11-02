@@ -1,0 +1,5 @@
+#!/bin/sh
+export NO_UPDATE_NOTIFIER=1
+config="$(dirname "$(readlink -f "$0")")/../../pi/browser.json"
+exec node "$HOME/.local/share/pi-playwright/node_modules/@playwright/cli/playwright-cli.js" \
+  --config="$config" "$@"

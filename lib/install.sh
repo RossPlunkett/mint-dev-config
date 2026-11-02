@@ -61,6 +61,8 @@ install_node_tools() {
     npm install --global @anthropic-ai/claude-code @railway/cli http-server bun
     "$ROOT/scripts/install-pi.sh"
     "$ROOT/scripts/install-agent-tools.sh"
+    "$ROOT/scripts/install-playwright.sh"
+    "$ROOT/scripts/install-blender-mcp.sh"
 }
 
 install_desktop_apps() {

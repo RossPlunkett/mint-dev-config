@@ -98,3 +98,13 @@ around it. Only the files inside each skill directory are bundled.
   when invoked explicitly.
 - Plugin manifests (`.claude-plugin/plugin.json` and similar) are not copied,
   so plugin-level metadata, versions and auto-update do not apply.
+
+## personal
+
+- No upstream: `manifests/skills.tsv` marks these `bundled`, so this copy is the
+  source of truth and is always the one installed.
+- `agentic`: `agentic/AGENTIC.md` from `RossPlunkett/rof-agent-office-data-backup`
+  (commit `5b7d4a7`) with skill front matter added. The office reads its own copy
+  of that file at run time; this one is for sessions outside the office.
+- `show-me`: copied from `RossPlunkett/new-agent-office` `cli-skills/show-me`. MIT
+  license from HumanLayer, in its `LICENSE`.

@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+"""Open desktop links with chrome-clean in a new window on the next unused i3 workspace.
+
+Start above the focused workspace number; skip all existing workspace numbers.
+Registered by chrome-clean-link.desktop for HTTP/HTTPS links. The existing
+chrome-clean launcher retains its profile/session cleanup behavior.
+"""
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+
+def main():
+    workspaces = json.loads(subprocess.check_output(
+        ["i3-msg", "-t", "get_workspaces"], text=True
+    ))
+    focused = next(workspace for workspace in workspaces if workspace["focused"])
+    used = {workspace["num"] for workspace in workspaces}
+    target = max(0, focused["num"]) + 1
+    while target in used:
+        target += 1
+    result = json.loads(subprocess.check_output(
+        ["i3-msg", f"workspace number {target}"], text=True
+    ))
+    if not all(reply["success"] for reply in result):
+        raise RuntimeError(f"i3 could not select workspace {target}: {result}")
+    launcher = str(Path.home() / ".local/bin/chrome-clean")
+    os.execv(launcher, [launcher, "--new-window", *sys.argv[1:]])
+
+
+if __name__ == "__main__":
+    main()

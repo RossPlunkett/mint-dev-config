@@ -64,11 +64,12 @@ Installation phases:
   - NVM + Node 22, Bun, and Pi with the recorded UI/subagents/Claude bridge profile
   - Claude Code, standalone Codex and OMP, Railway CLI, and CodeRabbit
   - uv, trafilatura, and OpenCode
-  - Blender 5.2.2 LTS and draw.io
+  - Blender 5.2.2 LTS with Blender MCP, and draw.io
+  - Playwright and its CLI, with Chromium
   - RossPlunkett/nvim with Neovim 0.11+
   - Matt Pocock curated skills for coding agents
   - GNOME Terminal, i3, CopyQ commands, and portable shell config
-  - JetBrains Mono Nerd Font and Courier Prime
+  - JetBrains Mono, Monofur, 3270 and HeavyData Nerd Fonts, and Courier Prime
 EOF
 
 if ((WITH_PROJECTS)); then

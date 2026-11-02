@@ -8,15 +8,44 @@
     "showTerminalProgress": true
   },
   "subagents": {
-    "defaultThinking": "medium"
+    "defaultThinking": "medium",
+    "agentOverrides": {
+      "worker": {
+        "tools": "inherit"
+      },
+      "delegate": {
+        "tools": "inherit"
+      },
+      "scout": {
+        "tools": "inherit"
+      },
+      "reviewer": {
+        "tools": "inherit"
+      },
+      "researcher": {
+        "tools": "inherit"
+      },
+      "oracle": {
+        "tools": "inherit"
+      },
+      "evidence-auditor": {
+        "tools": "inherit"
+      }
+    }
   },
-  "defaultProvider": "openai",
-  "defaultModel": "gpt-6.1-sol",
+  "defaultProvider": "claude-bridge",
+  "defaultModel": "claude-opus-5-5",
   "piOmpTheme": {
     "preset": "omp",
     "theme": {
       "autoApply": "felix-night"
     }
   },
-  "defaultProjectTrust": "always"
+  "defaultProjectTrust": "always",
+  "markdown": {
+    "mermaid": "streaming"
+  },
+  "extensions": [
+    "-builtin:mcp"
+  ]
 }

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome Clean (next i3 workspace)
+Comment=Open links in a new Chrome window on the next unused numbered i3 workspace
+Exec=@HOME@/.local/bin/chrome-clean-link %U
+TryExec=@HOME@/.local/bin/chrome-clean-link
+Icon=google-chrome
+Terminal=false
+StartupNotify=false
+Categories=Network;WebBrowser;
+MimeType=text/html;x-scheme-handler/http;x-scheme-handler/https;

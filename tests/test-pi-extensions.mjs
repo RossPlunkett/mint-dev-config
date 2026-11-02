@@ -20,6 +20,7 @@ const jiti = createJiti(import.meta.url, { alias: { '@earendil-works/pi-tui': tu
 const { visibleWidth } = await jiti.import(tuiPath);
 const { default: chatTitle } = await jiti.import(new URL('../pi/extensions/chat-title.mjs', import.meta.url).pathname);
 const { cleanTitle, titleFor } = await import('../pi/extensions/chat-namer.mjs');
+const { readUsage } = await import('../pi/extensions/usage.mjs');
 const { default: flair } = await import('../pi/extensions/flair.mjs');
 const { default: instructions } = await import('../pi/extensions/system-prompts.mjs');
 
@@ -68,8 +69,18 @@ for (const key of ['ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_BASE_
 process.stdin.resume();
 process.stdin.on('end', () => console.log('Install Pi profile'));
 `, { mode: 0o700 });
-  assert.equal(await titleFor(['Set up Pi'], fake), 'Install Pi profile');
-  assert.equal(await titleFor(['Set up Pi'], path.join(temp, 'missing')), null);
+  const missing = path.join(temp, 'missing');
+  assert.equal(await titleFor(['Set up Pi'], { claude: fake, pi: missing }), 'Install Pi profile');
+  assert.equal(await titleFor(['Set up Pi'], { claude: missing, pi: missing }), null);
+  const fakePi = path.join(temp, 'pi');
+  writeFileSync(fakePi, `#!/usr/bin/env node
+const args = process.argv.slice(2);
+if (args[args.indexOf('--model') + 1] !== 'openai-codex/gpt-6-luna' || !args.includes('--no-mcp')) process.exit(1);
+process.stdin.resume();
+process.stdin.on('end', () => console.log('Fallback title'));
+`, { mode: 0o700 });
+  assert.equal(await titleFor(['Set up Pi'], { claude: missing, pi: fakePi }), 'Fallback title');
+  assert.equal(await readUsage(temp), 'No usage cache yet. Run /usage to fetch subscription limits without inference.');
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }

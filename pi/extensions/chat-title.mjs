@@ -27,6 +27,7 @@ export default function chatTitle(pi) {
   let prompts = [];
   let named;
   let epoch = 0;
+  let request = 0;
   pi.on('session_start', (_event, ctx) => {
     prompts = [];
     named = undefined;
@@ -43,8 +44,10 @@ export default function chatTitle(pi) {
     const current = ctx.sessionManager.getSessionName();
     if (current && current !== named) return;
     const at = epoch;
+    const latest = ++request;
     titleFor(prompts.slice()).then(title => {
-      if (!title || at !== epoch) return;
+      // A newer prompt snapshot owns naming, even if its backends fail.
+      if (!title || at !== epoch || latest !== request) return;
       const now = ctx.sessionManager.getSessionName();
       if (now && now !== named) return;
       named = title;
