@@ -88,7 +88,7 @@ Bootstrap runs `scripts/install-audio.sh` so the Ross-o-Fone native host gets lo
 
 - adds you to the `pipewire` group, which PipeWire's own `limits.d` file grants realtime priority 95 and locked memory;
 - installs a GRUB drop-in, `/etc/default/grub.d/60-low-latency-audio.cfg`, that boots the kernel with `preempt=full threadirqs`;
-- switches power-profiles-daemon to the **performance** profile, so the CPU does not clock down in the middle of an audio buffer. This costs battery life on laptops.
+- enables `cpu-performance.service`, which sets the **performance** CPU governor at boot so the CPU does not clock down in the middle of an audio buffer. This costs battery life on laptops. The unit writes the governor directly because, on the X230 (`intel_pstate` in passive mode, no HWP), power-profiles-daemon's performance profile changes nothing.
 
 Log out to get realtime priority and reboot for the kernel options. `./doctor.sh` shows anything still pending. Undo everything with `./scripts/install-audio.sh --disable`.
 

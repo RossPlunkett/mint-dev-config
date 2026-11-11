@@ -60,7 +60,7 @@ Installation phases:
   - Tailscale APT repository
   - Google Chrome APT repository
   - Linux audio and JUCE build dependencies
-  - Low-latency audio: pipewire group (realtime), preempt=full threadirqs, performance power profile
+  - Low-latency audio: pipewire group (realtime), preempt=full threadirqs, performance CPU governor
   - Homebrew CLI tools (Node deliberately excluded)
   - NVM + Node 22, Bun, and Pi with the recorded UI/subagents/Claude bridge profile
   - Claude Code, standalone Codex and OMP, Railway CLI, and CodeRabbit

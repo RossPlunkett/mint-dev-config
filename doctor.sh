@@ -56,7 +56,13 @@ else
     printf 'MISS low-latency kernel options (scripts/install-audio.sh)\n'
     failures=$((failures + 1))
 fi
-command -v powerprofilesctl >/dev/null 2>&1 && printf 'info power profile %s\n' "$(powerprofilesctl get 2>/dev/null)"
+governor="$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null)"
+if [[ -z "$governor" || "$governor" == performance ]]; then
+    printf 'ok   CPU governor %s\n' "${governor:-n/a (no cpufreq)}"
+else
+    printf 'MISS performance CPU governor, have %s (scripts/install-audio.sh)\n' "$governor"
+    failures=$((failures + 1))
+fi
 check_command pw-jack
 
 if ((failures)); then
