@@ -5,20 +5,13 @@ set -euo pipefail
 # JACK bridge). Bootstrap runs it; --disable undoes it. Takes effect after a reboot.
 #   - the user joins `pipewire`, which pipewire-bin's limits.d grants rtprio 95 + memlock;
 #   - the kernel boots with preempt=full threadirqs (GRUB drop-in, appends only missing options);
-#   - power-profiles-daemon runs the performance profile, so the CPU never clocks down mid-buffer.
+#   - a oneshot system unit sets the performance CPU governor, so the CPU never clocks down mid-buffer.
 # The host's 128-sample quantum is requested per run by csoundfreak's `npm run native-audio:host`
 # (pw-jack -p 128); the desktop's default quantum is left alone.
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 mode="${1:---enable}"
 grub_conf=/etc/default/grub.d/60-low-latency-audio.cfg
-
-set_profile() {
-    if command -v powerprofilesctl >/dev/null 2>&1; then
-        powerprofilesctl set "$1" || printf 'Could not set the %s power profile.\n' "$1" >&2
-    else
-        printf 'power-profiles-daemon absent; CPU governor left alone.\n'
-    fi
-}
+governor_unit=/etc/systemd/system/cpu-performance.service
 
 case "$mode" in
     --enable)
@@ -27,7 +20,9 @@ case "$mode" in
             sudo install -D -m 0644 "$ROOT/dotfiles/audio/60-low-latency-audio.cfg" "$grub_conf"
             sudo update-grub
         fi
-        set_profile performance
+        sudo install -D -m 0644 "$ROOT/dotfiles/audio/cpu-performance.service" "$governor_unit"
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now cpu-performance.service
         printf 'Low-latency audio configured; log out for realtime limits, reboot for the kernel options.\n'
         ;;
     --disable)
@@ -36,7 +31,10 @@ case "$mode" in
             sudo rm -f "$grub_conf"
             sudo update-grub
         fi
-        set_profile balanced
+        sudo systemctl disable --now cpu-performance.service || true
+        sudo rm -f "$governor_unit"
+        sudo systemctl daemon-reload
+        printf 'The default CPU governor returns at the next reboot.\n'
         ;;
     *)
         printf 'Usage: %s [--enable|--disable]\n' "$0" >&2

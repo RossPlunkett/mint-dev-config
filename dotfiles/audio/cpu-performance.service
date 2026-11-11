@@ -1,0 +1,13 @@
+# Installed by mint-dev-config scripts/install-audio.sh: keeps every core at full
+# clock so audio buffers are never computed while the CPU ramps up. Written to
+# sysfs directly because power profiles do nothing under intel_pstate passive mode.
+[Unit]
+Description=Performance CPU governor for low-latency audio
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do [ -w "$g" ] && echo performance > "$g"; done; true'
+
+[Install]
+WantedBy=multi-user.target
