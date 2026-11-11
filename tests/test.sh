@@ -76,6 +76,22 @@ HOME="$work/always-on" PATH="$stubs:$PATH" "$ROOT/scripts/install-always-on.sh" 
 grep -q 'reset org.cinnamon.settings-daemon.plugins.power sleep-inactive-ac-type' "$calls" || fail 'Cinnamon sleep not restored'
 pass 'always-on script applies and undoes all three layers'
 
+# The audio script must touch only the group, GRUB drop-in and power profile, and undo them.
+calls="$work/audio-calls"
+for tool in sudo powerprofilesctl; do
+    printf '#!/usr/bin/env bash\nprintf "%s %%s\\n" "$*" >>"%s"\n[[ "$1" == cmp ]] && exit 1\nexit 0\n' "$tool" "$calls" >"$stubs/$tool"
+    chmod +x "$stubs/$tool"
+done
+PATH="$stubs:$PATH" "$ROOT/scripts/install-audio.sh" >/dev/null
+grep -q 'sudo usermod -aG pipewire' "$calls" || fail 'pipewire group not added'
+grep -q 'grub.d/60-low-latency-audio.cfg' "$calls" && grep -q 'sudo update-grub' "$calls" || fail 'GRUB drop-in not installed'
+grep -q 'powerprofilesctl set performance' "$calls" || fail 'performance profile not set'
+PATH="$stubs:$PATH" "$ROOT/scripts/install-audio.sh" --disable >/dev/null
+grep -q 'sudo gpasswd -d' "$calls" && grep -q 'powerprofilesctl set balanced' "$calls" || fail 'audio settings not undone'
+cmdline="$(GRUB_CMDLINE_LINUX_DEFAULT='quiet splash threadirqs' sh -c '. "$1"; printf %s "$GRUB_CMDLINE_LINUX_DEFAULT"' _ "$ROOT/dotfiles/audio/60-low-latency-audio.cfg")"
+[[ "$cmdline" == 'quiet splash threadirqs preempt=full' ]] || fail "GRUB drop-in produced: $cmdline"
+pass 'audio script applies and undoes the low-latency layers'
+
 before="$(find "$home/.config-backups" -type f -o -type l | sort)"
 HOME="$home" "$ROOT/install-config.sh" --no-dconf >/dev/null
 after="$(find "$home/.config-backups" -type f -o -type l | sort)"
