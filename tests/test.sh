@@ -51,7 +51,7 @@ for env in "$ROOT"/dotfiles/rice/themes/*/theme.env; do
         mkdir -p "$home/.config/rice/current"
         printf '%s\n' "$theme" >"$home/.config/rice/current/name"
         HOME="$home" "$home/.config/rice/bin/rice-theme" --render || fail "rice $theme does not render"
-        ! grep -q '\${RICE_' "$home/.config/rice/current/picom.conf" "$home/.config/rice/current/kitty/kitty.conf" || fail "rice $theme leaves placeholders"
+        ! grep -q '\${RICE_' "$home/.config/rice/current/picom.conf" "$home/.config/rice/current/kitty/kitty.conf" "$home/.config/rice/current/kitty/colors.conf" || fail "rice $theme leaves placeholders"
     fi
 done
 while IFS=$'\t' read -r theme _; do

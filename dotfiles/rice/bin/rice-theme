@@ -32,6 +32,7 @@ vars=$(compgen -v RICE_ | grep -Ev '^RICE_(MONITOR|BAR_RIGHT|TEST|NVIM)$' | sed 
 mkdir -p "$R/current/kitty"
 render() { envsubst "$vars" < "$R/templates/$1" > "$2"; }
 render kitty.conf "$R/current/kitty/kitty.conf"
+render kitty-colors.conf "$R/current/kitty/colors.conf"
 render picom.conf "$R/current/picom.conf"
 render polybar.ini "$R/current/polybar.ini"
 render rofi.rasi "$R/current/rofi.rasi"
@@ -54,7 +55,12 @@ bspc config active_border_color "$RICE_MUTED"
 bspc config window_gap "$RICE_GAP"
 bspc config border_width "$RICE_BORDER"
 rice-wallpaper --apply
-pkill -USR1 -x kitty || true
+# A kitty config reload resets every window's zoom, so only colors and opacity are sent.
+for s in "${XDG_RUNTIME_DIR:-/tmp}"/rice-kitty-*.sock; do
+  [ -S "$s" ] || continue
+  { kitty @ --to "unix:$s" set-colors --all --configured "$R/current/kitty/colors.conf" &&
+    kitty @ --to "unix:$s" set-background-opacity --all "$RICE_OPACITY"; } >/dev/null 2>&1 || rm -f "$s"
+done
 rice-bar
 sleep 0.3
 picom --config "$R/current/picom.conf" --daemon >/dev/null 2>&1 || true
