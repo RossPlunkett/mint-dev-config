@@ -126,7 +126,10 @@ libxrender-dev
 mesa-common-dev
 pavucontrol
 pipewire
+pipewire-alsa
 pipewire-audio-client-libraries
+pipewire-jack
+pipewire-pulse
 libspa-0.2-jack
 wireplumber
 
