@@ -24,7 +24,7 @@ Log out and select **i3** at the login screen. Log out or reboot after Docker gr
 ## Recorded software
 
 - i3, GNOME Terminal, dmenu, CopyQ, screen locking, screenshot tools, and portable Bash configuration; Cinnamon remains available.
-- APT development tools, JUCE and PipeWire/JACK/ALSA dependencies, Android prerequisites, **ripgrep owned by APT**, and Docker Engine/CLI, containerd, Buildx, and Compose.
+- APT development tools, JUCE and PipeWire/JACK/ALSA dependencies with [low-latency audio](#low-latency-audio) settings, Android prerequisites, **ripgrep owned by APT**, and Docker Engine/CLI, containerd, Buildx, and Compose.
 - Tailscale, Chrome, Android Studio and Scrivano (user Flatpaks).
 - Homebrew Neovim, GitHub CLI, lazygit, gitui, dysk, and LuaRocks. Node and `http-server` are not declared in Homebrew.
 - NVM Node 22; npm Claude Code, Railway CLI, `http-server`, Bun, and Pi (`@earendil-works/pi-coding-agent`).
@@ -81,6 +81,18 @@ A third login session, **bspwm**, sits beside Cinnamon and i3 without touching e
 - **kitty** comes from kitty's own installer into `~/.local/kitty.app` (`scripts/install-kitty.sh`); Mint's 0.32 sends Backspace twice in Pi.
 - Rendered files (`~/.config/rice/current/`) and display layouts stay local. Put xrandr lines for a particular desk in `~/.config/bspwm/local.sh`, which `bspwmrc` sources when present.
 - To add a rice, create `dotfiles/rice/themes/NAME/theme.env` with the same keys as the others and list its wallpapers in the manifest.
+
+## Low-latency audio
+
+Bootstrap runs `scripts/install-audio.sh` so the Ross-o-Fone native host gets low latency out of the box. It does three things:
+
+- adds you to the `pipewire` group, which PipeWire's own `limits.d` file grants realtime priority 95 and locked memory;
+- installs a GRUB drop-in, `/etc/default/grub.d/60-low-latency-audio.cfg`, that boots the kernel with `preempt=full threadirqs`;
+- switches power-profiles-daemon to the **performance** profile, so the CPU does not clock down in the middle of an audio buffer. This costs battery life on laptops.
+
+Log out to get realtime priority and reboot for the kernel options. `./doctor.sh` shows anything still pending. Undo everything with `./scripts/install-audio.sh --disable`.
+
+The host itself, `npm run native-audio:host` in csoundfreak, runs under `pw-jack` with a 128-sample quantum at 48 kHz (2.7 ms) and selects JACK on its first run. Set `ROF_JACK_PERIOD=256` if audio drops out. The rest of the desktop keeps PipeWire's default 1024-sample quantum. On felixpad (ThinkPad X230) the Release host held 128 with no xruns after startup.
 
 ## Per-machine Blender graphics
 
