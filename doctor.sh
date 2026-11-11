@@ -39,6 +39,26 @@ else
     failures=$((failures + 1))
 fi
 
+# Low-latency audio (scripts/install-audio.sh); relogin and reboot complete it.
+if id -nG | grep -qw pipewire; then
+    printf 'ok   pipewire group, realtime priority %s\n' "$(ulimit -r)"
+elif getent group pipewire | grep -qw "$USER"; then
+    printf 'info pipewire group added; log out to get realtime priority\n'
+else
+    printf 'MISS pipewire group (scripts/install-audio.sh)\n'
+    failures=$((failures + 1))
+fi
+if grep -qw preempt=full /proc/cmdline && grep -qw threadirqs /proc/cmdline; then
+    printf 'ok   kernel preempt=full threadirqs\n'
+elif [[ -e /etc/default/grub.d/60-low-latency-audio.cfg ]]; then
+    printf 'info reboot to boot with preempt=full threadirqs\n'
+else
+    printf 'MISS low-latency kernel options (scripts/install-audio.sh)\n'
+    failures=$((failures + 1))
+fi
+command -v powerprofilesctl >/dev/null 2>&1 && printf 'info power profile %s\n' "$(powerprofilesctl get 2>/dev/null)"
+check_command pw-jack
+
 if ((failures)); then
     printf '\nDoctor found %d missing command(s).\n' "$failures" >&2
     exit 1

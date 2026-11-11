@@ -60,6 +60,7 @@ Installation phases:
   - Tailscale APT repository
   - Google Chrome APT repository
   - Linux audio and JUCE build dependencies
+  - Low-latency audio: pipewire group (realtime), preempt=full threadirqs, performance power profile
   - Homebrew CLI tools (Node deliberately excluded)
   - NVM + Node 22, Bun, and Pi with the recorded UI/subagents/Claude bridge profile
   - Claude Code, standalone Codex and OMP, Railway CLI, and CodeRabbit
@@ -97,6 +98,7 @@ install_node_tools
 install_editor_and_skills
 "$ROOT/install-config.sh"
 "$ROOT/scripts/install-rice.sh"
+"$ROOT/scripts/install-audio.sh"
 
 if ((WITH_PROJECTS)); then
     if github_access_ready; then
