@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Open the Agent Office (Railway, through its SSH tunnel) in a Chrome incognito
+# window on the current desktop. Reuses a live tunnel on the port; otherwise
+# starts new-agent-office's scripts/startOffice.sh in the background and waits.
+# OFFICE_REPO overrides the checkout (default ~/dev/new-agent-office);
+# OFFICE_PORT the local port (default 4600).
+set -euo pipefail
+repo="${OFFICE_REPO:-$HOME/dev/new-agent-office}"
+port="${OFFICE_PORT:-4600}"
+url="http://localhost:$port/"
+log="${XDG_RUNTIME_DIR:-/tmp}/office-tunnel.log"
+
+say() {
+    printf '%s\n' "$1" >&2
+    command -v notify-send >/dev/null 2>&1 && notify-send -a office "office" "$1" || true
+}
+up() { curl -s -o /dev/null -m 2 "$url"; }
+
+if ! up; then
+    [[ -f "$repo/scripts/startOffice.sh" ]] || { say "No office checkout at $repo"; exit 1; }
+    setsid nohup bash "$repo/scripts/startOffice.sh" --no-open >"$log" 2>&1 </dev/null &
+    for _ in $(seq 60); do
+        up && break
+        kill -0 $! 2>/dev/null || { say "Office tunnel exited; see $log"; exit 1; }
+        sleep 0.5
+    done
+    up || { say "Office tunnel not ready after 30s; see $log"; exit 1; }
+fi
+
+# New windows land on the focused desktop (bspwm and i3 alike).
+exec google-chrome --incognito --new-window "$url" >/dev/null 2>&1

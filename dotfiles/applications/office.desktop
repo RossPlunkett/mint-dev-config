@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=office
+Comment=Tunnel to the Agent Office and open it in a Chrome incognito window on this desktop
+Exec=@HOME@/.local/bin/office-open
+TryExec=@HOME@/.local/bin/office-open
+Icon=google-chrome
+Terminal=false
+StartupNotify=false
+Categories=Development;

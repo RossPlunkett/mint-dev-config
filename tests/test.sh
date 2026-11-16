@@ -31,6 +31,8 @@ pass 'configuration replacement preserves originals and retires only owned links
 [[ "$(readlink -f "$home/.local/bin/playwright-cli")" == "$ROOT/dotfiles/local-bin/playwright-cli" ]] || fail 'playwright-cli not linked'
 cmp "$ROOT/dotfiles/omp/config.yml" "$home/.omp/agent/config.yml" || fail 'OMP config not copied'
 grep -qx "Exec=$home/.local/bin/chrome-clean-link %U" "$home/.local/share/applications/chrome-clean-link.desktop" || fail 'link launcher path not set'
+grep -qx "Exec=$home/.local/bin/office-open" "$home/.local/share/applications/office.desktop" || fail 'office launcher path not set'
+[[ "$(readlink -f "$home/.local/bin/office-open")" == "$ROOT/dotfiles/local-bin/office-open" ]] || fail 'office-open not linked'
 if command -v xdg-mime >/dev/null 2>&1; then
     grep -q 'x-scheme-handler/https=chrome-clean-link.desktop' "$home/.config/mimeapps.list" || fail 'link handler not set as default'
 fi

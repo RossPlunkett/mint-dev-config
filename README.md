@@ -66,6 +66,8 @@ Bash retains its caller's working directory rather than automatically entering a
 
 Links open through `chrome-clean-link`, the default browser handler: a new `chrome-clean` window on the next unused numbered i3 workspace.
 
+**Super+D → office** (`office-open`) opens the Agent Office in a Chrome incognito window on the current desktop. It reuses a live tunnel on `localhost:4600`, otherwise starts `~/dev/new-agent-office/scripts/startOffice.sh --no-open` in the background (log: `$XDG_RUNTIME_DIR/office-tunnel.log`) and waits up to 30s. The tunnel stays up after the window closes; stop it with `pkill -f "railway.sh open --name oaken-delta"`. `OFFICE_REPO` and `OFFICE_PORT` override the checkout and port.
+
 Automatic locking remains enabled, and the screen turns off after 25 minutes idle. **To keep a machine awake for unattended agents, run `./scripts/install-always-on.sh`** (`--disable` undoes it): it blocks automatic sleep while logged in, ignores the lid and turns off Cinnamon's idle sleep. Bootstrap never applies it. Displays use i3 and X defaults; per-desk monitor layouts are not recorded here.
 
 ## bspwm rice session

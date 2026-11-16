@@ -50,6 +50,7 @@ link_file "$ROOT/dotfiles/i3/screenshot.sh" "$HOME/.config/i3/screenshot.sh"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean" "$HOME/.local/bin/chrome-clean"
 link_file "$ROOT/dotfiles/local-bin/chrome-clean-link" "$HOME/.local/bin/chrome-clean-link"
 link_file "$ROOT/dotfiles/local-bin/o" "$HOME/.local/bin/o"
+link_file "$ROOT/dotfiles/local-bin/office-open" "$HOME/.local/bin/office-open"
 link_file "$ROOT/dotfiles/local-bin/playwright" "$HOME/.local/bin/playwright"
 link_file "$ROOT/dotfiles/local-bin/playwright-cli" "$HOME/.local/bin/playwright-cli"
 link_file "$ROOT/dotfiles/mcp/mcp.json" "$HOME/.config/mcp/mcp.json"
@@ -76,6 +77,9 @@ fi
 mkdir -p "$HOME/.local/share/applications"
 sed "s|@HOME@|$HOME|g" "$ROOT/dotfiles/applications/chrome-clean-link.desktop" \
     >"$HOME/.local/share/applications/chrome-clean-link.desktop"
+# Super+D → office: tunnel to the Agent Office and open it incognito.
+sed "s|@HOME@|$HOME|g" "$ROOT/dotfiles/applications/office.desktop" \
+    >"$HOME/.local/share/applications/office.desktop"
 if command -v xdg-mime >/dev/null 2>&1; then
     for mime in text/html x-scheme-handler/http x-scheme-handler/https; do
         xdg-mime default chrome-clean-link.desktop "$mime"
